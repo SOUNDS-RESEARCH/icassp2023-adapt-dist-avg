@@ -1,0 +1,207 @@
+% Template for ICASSP-2021 paper; to be used with:
+%          spconf.sty  - ICASSP/ICIP LaTeX style file, and
+%          IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+\documentclass{article}
+\usepackage{spconf,amsmath,graphicx}
+\input{preamble.tex}
+
+% Title.
+% ------
+\title{SOMETHING ABOUT THE DISTRIBUTED AVERAGING BASED APPROXIMATION IN SENSOR NETWORKS}
+%
+% Single address.
+% ---------------
+\name{Matthias Blochberger\(^1\), Filip Elvander\(^2\), Toon, ...\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369.}}
+\address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland}
+%
+% For example:
+% ------------
+%\address{School\\
+%	Department\\
+%	Address}
+%
+% Two addresses (uncomment and modify for two-address case).
+% ----------------------------------------------------------
+% \twoauthors{M. Blochberger
+%     \thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the Research Foundation - Flanders (FWO) grant 12ZD622N.}}
+%         {KU Leuven\\
+%         Dept. of Electrical Engineering (ESAT), STADIUS\\
+%         % STADIUS\\
+%         3001 Leuven, Belgium}
+%         {Filip Elvander}
+%         {Aalto University\\
+%         Dept. of Electronic Systems\\
+%         % Section on Artificial Intelligence and Sound\\
+%         9220 Aalborg, Finland}
+%
+\begin{document}
+% \ninept
+%
+\maketitle
+%
+\begin{abstract}
+  Distributed signal-processing algorithms in (wireless) sensor networks often aim to decentralize processing tasks to reduce transmission cost and computational complexity or avoid reliance on a single device for processing. In this contribution, we extend a distributed adaptive algorithm for blind system identification that relies on the knowledge of a stacked network-wide solution vector at each node, the computation of which requires either broadcasting or relaying of node-specific values to all other nodes. The extended algorithm employs a distributed-averaging-based estimation scheme to estimate the network-wide norm value by only using the information provided by neighboring sensor nodes. We introduce a mixing factor between instantaneous and recursion values for adaptivity in a time-varying system. The extension leads to a decreased number of transmissions while maintaining estimation performance close to the optimal case. Simulation results show how the mixing factor and the averaging scheme's number of iterations influence performance.
+\end{abstract}
+%
+\begin{keywords}
+multi-channel signal processing, distributed signal processing, wireless sensor networks, blind system identification, distributed averaging
+\end{keywords}
+%
+\section{INTRODUCTION}
+\label{sec:intro}
+
+Main contribution: Avoid broadcasting or relaying of norm values, with distributed averaging approach and low iteration count.
+Algorithms using a similar approach: \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016,liuDistributedRecursiveBlind2017}, however these use high numbers of iterations (30) which leads to many per-frame transmissions.
+Argument against broadcasting: (1)Large-scale networks, where not all nodes can physically communicate with each other, but that is not really that relevant for room acoustics... (2) just because. this is the network topology and configuratinos that was chosen as in a lot of literature.
+
+Important context in introduction: BSI, WSN, topology, connection matrix, 
+
+
+What to show:
+\begin{itemize}
+  \item Algorithm extension
+  \item Results
+  \begin{itemize}
+    \item compare results of unextended algorithm (optimal case)
+    \item with extended: varied iteration count (more iterations: better result, BUT also even 1 iteration can lead to good results)
+    \item varied mixing factor (there is some optimal \(\gamma\) apparently)
+    \item Show transmission cost: transmission cost over number of nodes
+  \end{itemize}
+\end{itemize}
+
+\section{DISTRIBUTED ADAPTIVE BLIND SYSTEM IDENTIFICATION}
+\label{sec:dbsi}
+Introduction of the algorithm from iwaenc paper. \cite{blochbergerDBSI}
+\begin{align}
+  \wf_i^{k+1} &= \underset{\wf_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\wf,\hf^k,\uuf^k)\label{eq:general_consensus_admm:local}\\
+  \hf^{k+1} &= \underset{\hf, \|\hf\| = 1}{\operatorname{argmin}}\, \mathcal{L}_{\rho} (\wf^{k+1},\hf,\uuf^k)\label{eq:general_consensus_admm:global}\\
+  \uuf_i^{k+1} &= \uuf_i^{k} + \rho \left( \wf_i^{k+1} - \tilde{\hf}_i^{k+1} \right),\label{eq:general_consensus_admm:dual}
+\end{align}
+
+The minimization problem for the local variable \(\wf_i\) \eqref{eq:general_consensus_admm:local} can be solved by various algorithms, in this case however we perform the adaptive update step as
+\begin{equation}
+    \wf_i^{m+1} = \wf_i^{m} - \mu \bm{{V}}_i^m \left( \hat{\aRhof}_i^m \wf_i^m + \uuf_i^m + \rho\left(\wf_i^m - \tilde{\hf}_i^{m}\right)\right),\label{eq:online_admm:local_update}
+\end{equation}
+where \(\mu\), (\(0  < \mu\leq 1\)), is a step size and \(\bm{{V}}_i^m = \left(\hat{\aRhof}_i^m + \rho \I \right)^{-1}\) is the regularized inverse Hessian of the problem.
+The implicit overlap-save matrices in \(\bm{{V}}_i^m\) make this a constrained update step which is costly to compute, so in order to reduce computational complexity, we introduce the approximation
+\begin{equation}
+    \hat{\bm{{V}}}_i^m = \operatorname{diag} \left\{ \operatorname{diag} \left\{ \hat{\aRhof}_i^m \right\} + \rho \mtxb{1} \right\}^{-1},
+\end{equation}
+which is straightforward to compute.
+It may be readily verified (cf. \cite{boydDistributedOptimizationStatistical2011}) that the solution to \eqref{eq:general_consensus_admm:global} is given by an update step which computes
+\begin{equation}
+    \hf_i^{m+1} = \frac{\bar{\hf}_i^{m+1}}{\sqrt{\sum_{j \in \Mset} \|\bar{\hf}_j^{m+1}\|^2}}\label{eq:online_admm:consensus_update}
+\end{equation}
+for each node \(i \in \Mset\) with the local unnormalized consensus
+\begin{equation}
+    \bar{\hf}_i^{m+1} = \bar{\wf}_i^{m+1} + \frac{1}{\rho} \bar{\uuf}_i^{m}.
+\end{equation}
+Here, \(\bar{\wf}_i = \frac{1}{N_i} \sum_{j \in \Tset_i} (\wf_j)_i\) and \(\bar{\uuf}_i = \frac{1}{N_i} \sum_{j \in \Tset_i} (\uuf_j)_i\), with \(N_i = | \Tset_i |\), are neigborhood averages of the channel response estimate and the dual variable of channel \(i\) respectively, computed at node \(i\). The values of all \(\|\bar{\hf}_i^{m+1}\|^2\), \(i \in \Mset\) are transmitted and relayed through the network until all nodes can compute the denominator in \eqref{eq:online_admm:consensus_update}.
+Finally, the update of the dual variables is given by
+\begin{equation}
+    \uuf_i^{m+1} = \uuf_i^{m} + \rho \left( \wf_i^{m+1} - \tilde{\hf}_i^{m+1} \right).\label{eq:online_admm:dual_update}
+\end{equation}
+
+POINT: update \eqref{eq:online_admm:consensus_update} requires knowledge of all \(\|\bar{\hf}_i^{m+1}\|^2\), \(i \in \Mset\) and we introduce a distributed averaging-based approach to tackle this.
+
+
+\section{Adaptive Norm Estimation}
+\label{sec:adaptivenormest}
+Distributed averaging:
+\begin{mini}{}{\|\W - \bm{1}\bm{1}^\T/n\|_2} {\label{eq1}}{}
+  \addConstraint{\W}{\in \mathcal{C}}
+  \addConstraint{\bm{1}^\T \W}{= \bm{1}^\T}
+  \addConstraint{\W \bm{1}}{= \bm{1}}
+\end{mini}
+gives us the optimal weights \(\mtxb{W}_{opt}\). The distributed averaging approach is an iterative approach, however here, we will try to find a way to limit the number of iterations necessary. This goal comes from the fact that the iterations require data from neighboring nodes leading to additional transmissions (per frame).
+
+We take avantage of the fact that the squared norm of the stacked solution vector can be separated into
+\begin{equation}
+  \| \h \|^2 = \sum_{j \in \Mset} \|\h_j\|^2.
+\end{equation}
+Then, we define the approximation of the global norm \(\hat{\phi}_i \approx \|\h\|^2\) at each node \(i\) at frame \(m\) as follows:
+\begin{align}
+  \phi_i^1 &= \hat{\phi}_i^{m}\\
+  \phi_i^{k+1} &= \sum_{j \in \Tset_i} W_{opt,ij} \phi_j^{k}\label{eq:dist_norm_est_iter}\\
+  \hat{\phi}_i^{m+1} &= \gamma \| \bar{\h}_j^{m+1} \|^2 + (1-\gamma) \phi_i^K
+\end{align}
+where \(\gamma\) is a exponential smoothing factor balancing new norm data with previous iterative estimate and \eqref{eq:dist_norm_est_iter} is applied \(K\) times.
+
+The special case of \(K=1\) leads to the update step:
+\begin{equation}
+  \hat{\phi}_i^{m+1} = \gamma \| \bar{\h}_j^{m+1} \|^2 + (1-\gamma) \sum_{j \in \Tset_i} W_{opt,ij} \hat{\phi}_j^m
+\end{equation}
+
+We use these in an inbetween step to estimate the norms of the channel impulse responses recursively. The full algorithm then looks like
+\begin{align}
+  \w_i^{m+1} &= \operatorname{argmin} \mathcal{L}_\rho(\w,\h,\uu)\\
+  \bar{\h}_i^{m+1} &= \bar{\w}_i^{m+1} + \frac{1}{\rho} \bar{\uu}_i^m\\
+  \phi_i^1 &= \hat{\phi}_i^{m}\\
+  \phi_i^{k+1} &= \sum_{j \in \Tset_i} W_{opt,ij} \phi_j^{k} \qquad\text{for } k=1...K\\
+  \hat{\phi}_i^{m+1} &= \gamma \| \bar{\h}_j^{m+1} \|^2 + (1-\gamma) \phi_i^K\\
+  \h_i^{m+1} &= \frac{\bar{\h}_i^{m+1}}{\sqrt{\hat{\phi}_i^K\,M}}\\
+  \uu_i^{m+1} &= \uu_i^{m} + \rho \left(\w_i^{m+1} - \tilde{\h}_i^{m+1}\right).
+\end{align}
+
+\section{Transmission cost}
+\label{sec:transcost}
+Show effect on number of transmissions. Scale up to high numbers of nudes so neigborhoods \(<<\) entire network.
+
+\section{Simulations}
+\label{sec:simulations}
+Simulations and results.
+\begin{itemize}
+  \item compare results of unextended algorithm (optimal case where all norm values are known)
+  \item varied iteration count (more iterations: better result, BUT also even 1 iteration can lead to good results, which doesnt need additional communitation per frame)
+  \item varied mixing factor (the is some optimum apparently, but unknown why and what it means)
+  \item evaluate on time-varying norms of IRs
+\end{itemize}
+
+
+\section[]{Conclusions}
+\label{sec:conclusions}
+Good results coming close to optimal case with less transmissions.
+
+% Below is an example of how to insert images. Delete the ``\vspace'' line,
+% uncomment the preceding line ``\centerline...'' and replace ``imageX.ps''
+% with a suitable PostScript file name.
+% -------------------------------------------------------------------------
+% \begin{figure}[htb]
+
+% \begin{minipage}[b]{1.0\linewidth}
+%   \centering
+%   \centerline{\includegraphics[width=8.5cm]{image1}}
+% %  \vspace{2.0cm}
+%   \centerline{(a) Result 1}\medskip
+% \end{minipage}
+% %
+% \begin{minipage}[b]{.48\linewidth}
+%   \centering
+%   \centerline{\includegraphics[width=4.0cm]{image3}}
+% %  \vspace{1.5cm}
+%   \centerline{(b) Results 3}\medskip
+% \end{minipage}
+% \hfill
+% \begin{minipage}[b]{0.48\linewidth}
+%   \centering
+%   \centerline{\includegraphics[width=4.0cm]{image4}}
+% %  \vspace{1.5cm}
+%   \centerline{(c) Result 4}\medskip
+% \end{minipage}
+% %
+% \caption{Example of placing a figure with experimental results.}
+% \label{fig:res}
+% %
+% \end{figure}
+
+\vfill\pagebreak
+
+% References should be produced using the bibtex program from suitable
+% BiBTeX files (here: strings, refs, manuals). The IEEEbib.bst bibliography
+% style file from IEEE produces unsorted bibliography list.
+% -------------------------------------------------------------------------
+\bibliographystyle{IEEEbib}
+\bibliography{refs}
+
+\end{document}

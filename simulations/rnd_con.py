@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import python_utils.utils as utils
 import python_utils.simulation as simulation
+from cvxpy import Variable, sum_squares, Minimize, Problem, vec
 
 
 # %%
@@ -26,6 +27,24 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
     ## %%
     # ################################################################
     # Put the simulation code here
+    connectivity_matrix_reshaped = nw.A_.reshape(nw.N * nw.N, 1)
+    pp = np.where(connectivity_matrix_reshaped == 0)
+    connectivity_matrix_zero_indices = pp[0].reshape(-1, 1)
+
+    W_opt = Variable((nw.N, nw.N))
+    objective = Minimize(
+        sum_squares(W_opt - np.divide((np.ones((nw.N, 1)) * np.ones((1, nw.N))), nw.N))
+    )
+    W_vec = vec(W_opt)
+    constraints = (
+        W_vec[connectivity_matrix_zero_indices] == 0,
+        np.ones([1, nw.N]) @ W_opt == np.ones([1, nw.N]),
+        W_opt @ np.ones([nw.N, 1]) == np.ones([nw.N, 1]),
+    )
+    prob = Problem(objective, constraints)
+    result = prob.solve()
+    W = W_opt.value.copy()
+
     L = 16
     nw = adf.Network(L)
     nw.addNode(0, 1)
@@ -107,7 +126,7 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
 if __name__ == "__main__":  # Necessary for module loading in condor processes :(
     cfg = simulation.SimConfig(
         id="icassp2023-static",
-        runs=50,
+        runs=30,
         seed=573438,
         variables=[
             {"alg": ["opt"], "SNR": [10], "gamma": [1.0], "iters": [1]},
@@ -126,16 +145,6 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
                     0.016,
                     0.018,
                     0.02,
-                    0.022,
-                    0.024,
-                    0.026,
-                    0.028,
-                    0.03,
-                    0.032,
-                    0.034,
-                    0.036,
-                    0.038,
-                    0.04,
                 ],
                 "iters": [1, 2, 10],
             },
@@ -183,7 +192,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     if sim.isDone():
         result = sim.getResult()
     # %%
-    data = result.df.groupby(["alg", "gamma", "iters"])
+    data = result.df.groupby(["alg", "SNR", "gamma", "iters"])
     # %%
     # Plot
     fig = plt.figure(figsize=(6, 4))
@@ -201,49 +210,3 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.show()
     # %%
     utils.savefig(fig, "icassp2023-static_plot", format="png")
-
-    # %%
-    fig = plt.figure(figsize=(6, 4))
-    # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
-    plt.xlabel(r"$\gamma$ [1]")
-    plt.ylabel("Avg NPM [dB]")
-
-    plt.plot(
-        cfg.variable_values[1]["gamma"],
-        20
-        * np.log10(data.median().T.tail(200).mean()["opt", 1.0, 1])
-        * np.ones_like(cfg.variable_values[1]["gamma"]),
-        "k--",
-        label=f"optimal",
-    )
-    plt.plot(
-        cfg.variable_values[1]["gamma"],
-        20 * np.log10(data.median().T.tail(200).mean()["davg", :, 1]),
-        label=f"davg 1",
-    )
-    plt.plot(
-        cfg.variable_values[1]["gamma"],
-        20 * np.log10(data.median().T.tail(200).mean()["davg", :, 2]),
-        label=f"davg 2",
-    )
-    plt.plot(
-        cfg.variable_values[1]["gamma"],
-        20 * np.log10(data.median().T.tail(200).mean()["davg", :, 10]),
-        label=f"davg 10",
-    )
-
-    plt.grid()
-    plt.ylim(-35, 0)
-    plt.xlim(0, 0.04)
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
-
-# %%
-plt.plot(
-        cfg.variable_values[1]["gamma"],
-        data.median().T.tail(200).mean()["davg", :, 1],
-        "k--",
-    )
-
-# %%

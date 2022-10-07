@@ -57,7 +57,6 @@ Argument against broadcasting: (1)Large-scale networks, where not all nodes can 
 
 Important context in introduction: BSI, WSN, topology, connection matrix, 
 
-
 What to show:
 \begin{itemize}
   \item Algorithm extension
@@ -146,7 +145,29 @@ We use these in an inbetween step to estimate the norms of the channel impulse r
 
 \section{Transmission cost}
 \label{sec:transcost}
-Show effect on number of transmissions. Scale up to high numbers of nudes so neigborhoods \(<<\) entire network.
+Show effect on number of transmissions. Scale up to high numbers of nodes so neigborhoods \(<<\) entire network.
+
+\begin{align}
+  \mathcal{O}(&(M-1)^2) & &+ & \mathcal{O}(&(M-1)^2)\\
+  \mathcal{O}(&M-1) & &+ & \mathcal{O}(&(M-1)^2)\\
+  \mathcal{O}(&M \bar{N}_i R) & &+ & \mathcal{O}(&M \bar{N}_i R)
+\end{align}
+
+Or per node:
+\begin{align}
+  \mathcal{O}(&M-1) & &+ & \mathcal{O}(&M-1)\\
+  \mathcal{O}(&1) & &+ & \mathcal{O}(&M-1)\\
+  \mathcal{O}(&\bar{N}_i R) & &+ & \mathcal{O}(&\bar{N}_i R)
+\end{align}
+
+\begin{figure}
+  \centering
+  \input{simulations/plots/transcost/transcost.pgf}
+  \input{simulations/plots/transcostnode/transcostnode.pgf}
+  \vspace*{-0.8cm}
+  \caption[]{The order of transmission cost of entire network or single node (choose which to keep if at all.).}
+  \label{fig:transcost:bigo}
+\end{figure}
 
 \section{Simulations}
 \label{sec:simulations}
@@ -157,7 +178,6 @@ Simulations and results.
   \item varied mixing factor (the is some optimum apparently, but unknown why and what it means)
   \item evaluate on time-varying norms of IRs
 \end{itemize}
-
 
 \section[]{Conclusions}
 \label{sec:conclusions}

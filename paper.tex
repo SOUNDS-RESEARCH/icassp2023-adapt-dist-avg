@@ -12,7 +12,7 @@
 %
 % Single address.
 % ---------------
-\name{Matthias Blochberger\(^1\), Filip Elvander\(^2\), Toon, ...\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369.}}
+\name{Matthias Blochberger\(^1\), Filip Elvander\(^2\), Toon, ...\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information.}}
 \address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland}
 %
 % For example:
@@ -61,7 +61,7 @@ However, the CR-based BSI task necessitates a non-triviality constraint on the f
 In this case, a global variable is a variable, the computation of which requires information from all nodes within the network.
 To overcome the need for the network to be fully connected, \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016} use an average consensus \cite{xiaoFastLinearIterations2004} approach where a secondary recursion estimates the global variable for each signal frame.
 The algorithm in \cite{blochbergerDBSI} relies on node-wise values being relayed throughout the network.
-Both approaches introduce additional transmissions of variables between nodes, the number of which, depending on network and neighborhood size, can be substantial and even unfeasable.
+Both approaches introduce additional transmissions of variables between nodes, the number of which, depending on network and neighborhood size, can be substantial or even unfeasable.
 
 In this paper, we extend \cite{blochbergerDBSI} with a distributed averaging-based \cite{xiaoFastLinearIterations2004} estimation scheme for the global variable with the introduction of a mixing factor to include instantaneous values into the averaging recursion.
 The mixing factor allows us (i) to reduce the number of secondary iterations significantly (down to 1) and (ii) track time-varying systems.
@@ -89,18 +89,26 @@ Simulation results show how the extension leads to BSI performance close to an o
 \label{sec:dbsi}
 In \cite{blochbergerDBSI}, we proposed an adaptive SIMO BSI algorithm based on Online-ADMM.
 In this section, we will introduce parts which are necessary for the reader to understand the extension.
-For the full algorithm, we refer the reader to the previous publication.
+For the full derivation and algorithm, we refer the reader to the cited publication.
 
-The coss-realtion problem 
+The coss-relation problem formulation is used relative information between sensor signals to identify the system, i.e., the acoutic or communication channels.
+The solution to this problem is found by the minimization problem
+\begin{equation}
+  \begin{aligned}
+      \hat{\h} = \arg \min_{\h} \quad &\h^\herm \hat{\R} \h \\
+      \text{s.t. } \quad &\h^\herm \h = 1.
+  \end{aligned}\label{eq:frequency_domain:min_prob}
+\end{equation}
+where 
 \begin{align}
-  \wf_i^{k+1} &= \underset{\wf_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\wf,\hf^k,\uuf^k)\label{eq:general_consensus_admm:local}\\
-  \hf^{k+1} &= \underset{\hf, \|\hf\| = 1}{\operatorname{argmin}}\, \mathcal{L}_{\rho} (\wf^{k+1},\hf,\uuf^k)\label{eq:general_consensus_admm:global}\\
-  \uuf_i^{k+1} &= \uuf_i^{k} + \rho \left( \wf_i^{k+1} - \tilde{\hf}_i^{k+1} \right),\label{eq:general_consensus_admm:dual}
+  \w_i^{k+1} &= \underset{\w_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\w,\h^k,\uu^k)\label{eq:general_consensus_admm:local}\\
+  \h^{k+1} &= \underset{\h, \|\h\| = 1}{\operatorname{argmin}}\, \mathcal{L}_{\rho} (\w^{k+1},\h,\uu^k)\label{eq:general_consensus_admm:global}\\
+  \uu_i^{k+1} &= \uu_i^{k} + \rho \left( \w_i^{k+1} - \tilde{\h}_i^{k+1} \right),\label{eq:general_consensus_admm:dual}
 \end{align}
 
-% The minimization problem for the local variable \(\wf_i\) \eqref{eq:general_consensus_admm:local} can be solved by various algorithms, in this case however we perform the adaptive update step as
+% The minimization problem for the local variable \(\w_i\) \eqref{eq:general_consensus_admm:local} can be solved by various algorithms, in this case however we perform the adaptive update step as
 % \begin{equation}
-%     \wf_i^{m+1} = \wf_i^{m} - \mu \bm{{V}}_i^m \left( \hat{\aRhof}_i^m \wf_i^m + \uuf_i^m + \rho\left(\wf_i^m - \tilde{\hf}_i^{m}\right)\right),\label{eq:online_admm:local_update}
+%     \w_i^{m+1} = \w_i^{m} - \mu \bm{{V}}_i^m \left( \hat{\aRhof}_i^m \w_i^m + \uu_i^m + \rho\left(\w_i^m - \tilde{\h}_i^{m}\right)\right),\label{eq:online_admm:local_update}
 % \end{equation}
 % where \(\mu\), (\(0  < \mu\leq 1\)), is a step size and \(\bm{{V}}_i^m = \left(\hat{\aRhof}_i^m + \rho \I \right)^{-1}\) is the regularized inverse Hessian of the problem.
 % The implicit overlap-save matrices in \(\bm{{V}}_i^m\) make this a constrained update step which is costly to compute, so in order to reduce computational complexity, we introduce the approximation
@@ -110,19 +118,19 @@ The coss-realtion problem
 % which is straightforward to compute.
 It may be readily verified (cf. \cite{boydDistributedOptimizationStatistical2011}) that the solution to \eqref{eq:general_consensus_admm:global} is given by an update step which computes
 \begin{equation}
-    \hf_i^{m+1} = \frac{\bar{\hf}_i^{m+1}}{\sqrt{\sum_{j \in \Mset} \|\bar{\hf}_j^{m+1}\|^2}}\label{eq:online_admm:consensus_update}
+    \h_i^{m+1} = \frac{\bar{\h}_i^{m+1}}{\sqrt{\sum_{j \in \Mset} \|\bar{\h}_j^{m+1}\|^2}}\label{eq:online_admm:consensus_update}
 \end{equation}
 for each node \(i \in \Mset\) with the local unnormalized consensus
 \begin{equation}
-    \bar{\hf}_i^{m+1} = \bar{\wf}_i^{m+1} + \frac{1}{\rho} \bar{\uuf}_i^{m}.
+    \bar{\h}_i^{m+1} = \bar{\w}_i^{m+1} + \frac{1}{\rho} \bar{\uu}_i^{m}.
 \end{equation}
-Here, \(\bar{\wf}_i = \frac{1}{N_i} \sum_{j \in \Tset_i} (\wf_j)_i\) and \(\bar{\uuf}_i = \frac{1}{N_i} \sum_{j \in \Tset_i} (\uuf_j)_i\), with \(N_i = | \Tset_i |\), are neigborhood averages of the channel response estimate and the dual variable of channel \(i\) respectively, computed at node \(i\). The values of all \(\|\bar{\hf}_i^{m+1}\|^2\), \(i \in \Mset\) are transmitted and relayed through the network until all nodes can compute the denominator in \eqref{eq:online_admm:consensus_update}.
+Here, \(\bar{\w}_i = \frac{1}{N_i} \sum_{j \in \Tset_i} (\w_j)_i\) and \(\bar{\uu}_i = \frac{1}{N_i} \sum_{j \in \Tset_i} (\uu_j)_i\), with \(N_i = | \Tset_i |\), are neigborhood averages of the channel response estimate and the dual variable of channel \(i\) respectively, computed at node \(i\). The values of all \(\|\bar{\h}_i^{m+1}\|^2\), \(i \in \Mset\) are transmitted and relayed through the network until all nodes can compute the denominator in \eqref{eq:online_admm:consensus_update}.
 % Finally, the update of the dual variables is given by
 % \begin{equation}
-%     \uuf_i^{m+1} = \uuf_i^{m} + \rho \left( \wf_i^{m+1} - \tilde{\hf}_i^{m+1} \right).\label{eq:online_admm:dual_update}
+%     \uu_i^{m+1} = \uu_i^{m} + \rho \left( \w_i^{m+1} - \tilde{\h}_i^{m+1} \right).\label{eq:online_admm:dual_update}
 % \end{equation}
 
-POINT: update \eqref{eq:online_admm:consensus_update} requires knowledge of all \(\|\bar{\hf}_i^{m+1}\|^2\), \(i \in \Mset\) and we introduce a distributed averaging-based approach to tackle this.
+POINT: update \eqref{eq:online_admm:consensus_update} requires knowledge of all \(\|\bar{\h}_i^{m+1}\|^2\), \(i \in \Mset\) and we introduce a distributed averaging-based approach to tackle this.
 
 
 \section{Adaptive Norm Estimation}
@@ -243,7 +251,7 @@ Good results coming close to optimal case with less transmissions.
 % %  \vspace{1.5cm}
 %   \centerline{(b) Results 3}\medskip
 % \end{minipage}
-% \hfill
+% \hill
 % \begin{minipage}[b]{0.48\linewidth}
 %   \centering
 %   \centerline{\includegraphics[width=4.0cm]{image4}}

@@ -230,6 +230,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         * np.ones_like(cfg.variable_values[2]["gamma"]),
         styles.pop(),
         label=f"optimal",
+        markersize=3,
+        markevery=(1, 3),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -238,6 +240,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         * np.ones_like(cfg.variable_values[2]["gamma"]),
         styles.pop(),
         label=rf"adaptive $\gamma_i$",
+        markersize=3,
+        markevery=(2, 3),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -245,6 +249,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"$K=1$",
         markersize=3,
+        markevery=(3, 3),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -252,6 +257,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"$K=2$",
         markersize=3,
+        markevery=(4, 3),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -259,6 +265,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"$K=10$",
         markersize=3,
+        markevery=(5, 3),
     )
 
     plt.grid()

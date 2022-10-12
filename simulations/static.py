@@ -217,7 +217,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     utils.savefig(fig, "icassp2023-static_plot", format="png")
 
     # %%
-    styles = ["-<", "->", "-v", "-o", "-s"]
+    styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
     plt.xlabel(r"Mixing factor $\gamma$ [1]")
@@ -280,7 +280,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
-    styles = ["-+", "-x", "-<", "->", "-v", "-o", "-s"]
+    styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
@@ -302,42 +302,42 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.01, 1]),
         styles.pop(),
-        label=rf"fixed $\gamma_i,\,K=1$",
+        label=rf"$\gamma_i = 0.01,\,K=1$",
         markersize=3,
         markevery=(40, 200),
     )
     # plt.plot(
     #     20 * np.log10(data.median().T["davg", 0.01, 2]),
     #     styles.pop(),
-    #     label=rf"fixed $\gamma_i,\,K=2$",
+    #     label=rf"$\gamma_i,\,K=2$",
     #     markersize=3,
     #     markevery=(60, 200),
     # )
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.01, 10]),
         styles.pop(),
-        label=rf"fixed $\gamma_i,\,K=10$",
+        label=rf"$\gamma_i = 0.01,\,K=10$",
         markersize=3,
         markevery=(80, 200),
     )
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.04, 1]),
         styles.pop(),
-        label=rf"fixed $\gamma_i,\,K=1$",
+        label=rf"$\gamma_i = 0.04,\,K=1$",
         markersize=3,
         markevery=(40, 200),
     )
     # plt.plot(
     #     20 * np.log10(data.median().T["davg", 0.01, 2]),
     #     styles.pop(),
-    #     label=rf"fixed $\gamma_i,\,K=2$",
+    #     label=rf"$\gamma_i,\,K=2$",
     #     markersize=3,
     #     markevery=(60, 200),
     # )
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.04, 10]),
         styles.pop(),
-        label=rf"fixed $\gamma_i,\,K=10$",
+        label=rf"$\gamma_i = 0.04,\,K=10$",
         markersize=3,
         markevery=(80, 200),
     )

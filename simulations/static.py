@@ -217,7 +217,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     utils.savefig(fig, "icassp2023-static_plot", format="png")
 
     # %%
-    styles = ["-<", "->", "-v", "-s", "-o"]
+    styles = ["-<", "->", "-v", "-o", "-s"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
     plt.xlabel(r"Mixing factor $\gamma$ [1]")
@@ -228,7 +228,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20
         * np.log10(data.median().T.tail(200).mean()["opt", 1.0, 1])
         * np.ones_like(cfg.variable_values[2]["gamma"]),
-        "k-.",
+        styles.pop(),
         label=f"optimal",
     )
     plt.plot(
@@ -236,7 +236,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20
         * np.log10(data.median().T.tail(200).mean()["davgad", 1.0, 1])
         * np.ones_like(cfg.variable_values[2]["gamma"]),
-        "-",
+        styles.pop(),
         label=rf"adaptive $\gamma_i$",
     )
     plt.plot(
@@ -262,7 +262,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     )
 
     plt.grid()
-    plt.ylim(-40, 0)
+    plt.ylim(-40, -10)
     plt.xlim(0, 0.04)
     plt.legend(ncol=2, prop={"size": 7})
     plt.tight_layout()

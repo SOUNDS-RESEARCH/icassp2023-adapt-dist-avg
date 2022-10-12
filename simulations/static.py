@@ -262,9 +262,9 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     )
 
     plt.grid()
-    plt.ylim(-50, 0)
+    plt.ylim(-40, 0)
     plt.xlim(0, 0.04)
-    plt.legend()
+    plt.legend(ncol=2, prop={"size": 7})
     plt.tight_layout()
     plt.show()
 

@@ -231,7 +231,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=f"optimal",
         markersize=3,
-        markevery=(1, 3),
+        markevery=(1, 2),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -241,7 +241,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"adaptive $\gamma_i$",
         markersize=3,
-        markevery=(2, 3),
+        markevery=(2, 2),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -249,7 +249,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"$K=1$",
         markersize=3,
-        markevery=(3, 3),
+        markevery=(3, 2),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -257,7 +257,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"$K=2$",
         markersize=3,
-        markevery=(4, 3),
+        markevery=(4, 2),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -265,11 +265,11 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"$K=10$",
         markersize=3,
-        markevery=(5, 3),
+        markevery=(5, 2),
     )
 
     plt.grid()
-    plt.ylim(-40, -10)
+    plt.ylim(-40, -20)
     plt.xlim(0, 0.04)
     plt.legend(ncol=2, prop={"size": 7})
     plt.tight_layout()

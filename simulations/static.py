@@ -239,7 +239,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         * np.log10(data.median().T.tail(200).mean()["davgad", 1.0, 1])
         * np.ones_like(cfg.variable_values[2]["gamma"]),
         styles.pop(),
-        label=rf"adaptive $\gamma_i$",
+        label=rf"adaptive $\gamma_i,\,K=1$",
         markersize=3,
         markevery=(2, 2),
     )
@@ -247,7 +247,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 1]),
         styles.pop(),
-        label=rf"$K=1$",
+        label=rf"fixed $\gamma_i,\,K=1$",
         markersize=3,
         markevery=(3, 2),
     )
@@ -255,7 +255,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 2]),
         styles.pop(),
-        label=rf"$K=2$",
+        label=rf"fixed $\gamma_i,\,K=2$",
         markersize=3,
         markevery=(4, 2),
     )
@@ -263,7 +263,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 10]),
         styles.pop(),
-        label=rf"$K=10$",
+        label=rf"fixed $\gamma_i,\,K=10$",
         markersize=3,
         markevery=(5, 2),
     )

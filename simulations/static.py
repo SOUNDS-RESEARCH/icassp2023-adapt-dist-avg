@@ -7,6 +7,11 @@ import numpy as np
 import python_utils.utils as utils
 import python_utils.simulation as simulation
 
+# %%
+# import matplotlib
+# import matplotlib.pyplot as plt
+
+# %%
 import matplotlib
 
 matplotlib.use("pgf")
@@ -169,7 +174,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     sim = simulation.Simulation(cfg, os.path.realpath(__file__), simulate)
     # %%
     # Delete generated data if necessary
-    sim.clearTmpData()
+    # sim.clearTmpData()
     # %%
     # Run the simulation locally with n processes
     sim.runLocal(nprocesses=8, showprogress=True)
@@ -201,20 +206,6 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         result = sim.getResult()
     # %%
     data = result.df.groupby(["alg", "gamma", "iters"])
-    # %%
-    # Plot
-    fig = plt.figure(figsize=(6, 4))
-    plt.title("Title")
-    plt.xlabel("Series [1]")
-    plt.ylabel("Value [1]")
-    # labels = [rf"{label}" for label in data.groups.keys()]
-    plt.plot(20 * np.log10(data.median().T["opt", 1.0, 1]))
-    plt.legend()
-    plt.grid()
-    plt.tight_layout()
-    plt.show()
-    # %%
-    utils.savefig(fig, "icassp2023-static_plot", format="png")
 
     # %%
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
@@ -280,67 +271,145 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
+    mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
     plt.ylabel("NPM [dB]")
-    plt.plot(
+    # #########
+    (line,) = plt.plot(
         20 * np.log10(data.median().T["opt", 1.0, 1]),
-        styles.pop(),
+        "k-",
+        label=f"_optimal",
+        markersize=3,
+        markevery=(1, 200),
+        alpha=0.25,
+    )
+    plt.plot(
+        20
+        * np.log10(
+            np.convolve(
+                data.median().T["opt", 1.0, 1], np.ones(mavg) / mavg, mode="valid"
+            )
+        ),
+        "-",
         label=f"optimal",
         markersize=3,
         markevery=(1, 200),
+        color=line.get_color(),
+    )
+    # #########
+    (line,) = plt.plot(
+        20 * np.log10(data.median().T["davgad", 1.0, 1]),
+        "-",
+        label=rf"_adaptive $\gamma_i,\,K=1$",
+        markersize=3,
+        markevery=(20, 200),
+        alpha=0.25,
     )
     plt.plot(
-        20 * np.log10(data.median().T["davgad", 1.0, 1]),
-        styles.pop(),
+        20
+        * np.log10(
+            np.convolve(
+                data.median().T["davgad", 1.0, 1], np.ones(mavg) / mavg, mode="valid"
+            )
+        ),
+        "-o",
         label=rf"adaptive $\gamma_i,\,K=1$",
         markersize=3,
         markevery=(20, 200),
+        color=line.get_color(),
+    )
+    # #########
+    (line,) = plt.plot(
+        20 * np.log10(data.median().T["davg", 0.01, 1]),
+        "-",
+        label=rf"_$\gamma_i = 0.01,\,K=1$",
+        markersize=3,
+        markevery=(40, 200),
+        alpha=0.25,
     )
     plt.plot(
-        20 * np.log10(data.median().T["davg", 0.01, 1]),
-        styles.pop(),
+        20
+        * np.log10(
+            np.convolve(
+                data.median().T["davg", 0.01, 1], np.ones(mavg) / mavg, mode="valid"
+            )
+        ),
+        "-s",
         label=rf"$\gamma_i = 0.01,\,K=1$",
         markersize=3,
         markevery=(40, 200),
+        color=line.get_color(),
     )
-    # plt.plot(
-    #     20 * np.log10(data.median().T["davg", 0.01, 2]),
-    #     styles.pop(),
-    #     label=rf"$\gamma_i,\,K=2$",
-    #     markersize=3,
-    #     markevery=(60, 200),
-    # )
-    plt.plot(
+    # #########
+    (line,) = plt.plot(
         20 * np.log10(data.median().T["davg", 0.01, 10]),
-        styles.pop(),
+        "-",
+        label=rf"_$\gamma_i = 0.01,\,K=10$",
+        markersize=3,
+        markevery=(60, 200),
+        alpha=0.25,
+    )
+    plt.plot(
+        20
+        * np.log10(
+            np.convolve(
+                data.median().T["davg", 0.01, 10], np.ones(mavg) / mavg, mode="valid"
+            )
+        ),
+        "-x",
         label=rf"$\gamma_i = 0.01,\,K=10$",
         markersize=3,
+        markevery=(60, 200),
+        color=line.get_color(),
+    )
+    # #########
+    (line,) = plt.plot(
+        20 * np.log10(data.median().T["davg", 0.04, 1]),
+        "-",
+        label=rf"_$\gamma_i = 0.04,\,K=1$",
+        markersize=3,
         markevery=(80, 200),
+        alpha=0.25,
     )
     plt.plot(
-        20 * np.log10(data.median().T["davg", 0.04, 1]),
-        styles.pop(),
+        20
+        * np.log10(
+            np.convolve(
+                data.median().T["davg", 0.04, 1], np.ones(mavg) / mavg, mode="valid"
+            )
+        ),
+        "-+",
         label=rf"$\gamma_i = 0.04,\,K=1$",
         markersize=3,
-        markevery=(40, 200),
+        markevery=(80, 200),
+        color=line.get_color(),
     )
-    # plt.plot(
-    #     20 * np.log10(data.median().T["davg", 0.01, 2]),
-    #     styles.pop(),
-    #     label=rf"$\gamma_i,\,K=2$",
-    #     markersize=3,
-    #     markevery=(60, 200),
-    # )
-    plt.plot(
+    # #########
+    (line,) = plt.plot(
         20 * np.log10(data.median().T["davg", 0.04, 10]),
-        styles.pop(),
+        "-",
+        label=rf"_$\gamma_i = 0.04,\,K=10$",
+        markersize=3,
+        markevery=(100, 200),
+        alpha=0.25,
+    )
+    plt.plot(
+        20
+        * np.log10(
+            np.convolve(
+                data.median().T["davg", 0.04, 10], np.ones(mavg) / mavg, mode="valid"
+            )
+        ),
+        "-v",
         label=rf"$\gamma_i = 0.04,\,K=10$",
         markersize=3,
-        markevery=(80, 200),
+        markevery=(100, 200),
+        color=line.get_color(),
     )
+    # #########
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     plt.tight_layout(pad=0.5)

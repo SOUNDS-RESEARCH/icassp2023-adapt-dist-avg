@@ -412,6 +412,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # #########
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
+    plt.ylim(-40, 0)
+    plt.xlim(0, 6000)
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%

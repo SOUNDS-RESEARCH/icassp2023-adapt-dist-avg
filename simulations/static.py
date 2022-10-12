@@ -280,7 +280,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
-    styles = ["-<", "->", "-v", "-o", "-s"]
+    styles = ["-+", "-x", "-<", "->", "-v", "-o", "-s"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
@@ -290,37 +290,58 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=f"optimal",
         markersize=3,
-        markevery=(1, 500),
+        markevery=(1, 200),
     )
     plt.plot(
         20 * np.log10(data.median().T["davgad", 1.0, 1]),
         styles.pop(),
         label=rf"adaptive $\gamma_i,\,K=1$",
         markersize=3,
-        markevery=(50, 500),
+        markevery=(20, 200),
     )
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.01, 1]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=1$",
         markersize=3,
-        markevery=(100, 500),
+        markevery=(40, 200),
     )
+    # plt.plot(
+    #     20 * np.log10(data.median().T["davg", 0.01, 2]),
+    #     styles.pop(),
+    #     label=rf"fixed $\gamma_i,\,K=2$",
+    #     markersize=3,
+    #     markevery=(60, 200),
+    # )
     plt.plot(
-        20 * np.log10(data.median().T["davg", 0.01, 2]),
-        styles.pop(),
-        label=rf"fixed $\gamma_i,\,K=2$",
-        markersize=3,
-        markevery=(150, 500),
-    )
-    plt.plot(
-        20 * np.log10(data.median().T["davg", 0.01, 1]),
+        20 * np.log10(data.median().T["davg", 0.01, 10]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=10$",
         markersize=3,
-        markevery=(200, 500),
+        markevery=(80, 200),
     )
-    plt.legend()
+    plt.plot(
+        20 * np.log10(data.median().T["davg", 0.04, 1]),
+        styles.pop(),
+        label=rf"fixed $\gamma_i,\,K=1$",
+        markersize=3,
+        markevery=(40, 200),
+    )
+    # plt.plot(
+    #     20 * np.log10(data.median().T["davg", 0.01, 2]),
+    #     styles.pop(),
+    #     label=rf"fixed $\gamma_i,\,K=2$",
+    #     markersize=3,
+    #     markevery=(60, 200),
+    # )
+    plt.plot(
+        20 * np.log10(data.median().T["davg", 0.04, 10]),
+        styles.pop(),
+        label=rf"fixed $\gamma_i,\,K=10$",
+        markersize=3,
+        markevery=(80, 200),
+    )
+    plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     plt.tight_layout(pad=0.5)
     plt.show()

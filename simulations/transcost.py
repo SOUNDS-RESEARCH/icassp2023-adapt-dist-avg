@@ -92,7 +92,7 @@ plt.legend(ncol=2, prop={"size": 7}, loc="center left", bbox_to_anchor=(0.1, 0.3
 plt.grid()
 plt.yscale("log")
 plt.xlim(0, 5000)
-plt.tight_layout()
+plt.tight_layout(pad=0.5)
 plt.show()
 # %%
 utils.savefig(fig, "transcostnode", format="pgf", pgf_font="serif")

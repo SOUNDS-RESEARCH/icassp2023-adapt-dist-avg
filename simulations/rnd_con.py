@@ -21,7 +21,7 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
     if alg == "opt":
         import admm_fq as adf
     if alg == "davg":
-        import admm_fq_distavg as adf
+        import admm_fq_distavg_opt as adf
 
     rng = np.random.default_rng(np.random.PCG64DXSM(seed).jumped(run))
     ## %%

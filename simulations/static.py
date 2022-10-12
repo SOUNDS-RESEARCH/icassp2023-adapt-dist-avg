@@ -20,7 +20,9 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
     if alg == "opt":
         import admm_fq as adf
     if alg == "davg":
-        import admm_fq_distavg as adf
+        import admm_fq_distavg_opt as adf
+    if alg == "davgad":
+        import admm_fq_distavg_ad as adf
 
     rng = np.random.default_rng(np.random.PCG64DXSM(seed).jumped(run))
     ## %%
@@ -52,13 +54,13 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
         nw.setAveragingWeights(W)
 
     rho = 1.0
-    stepsize = 0.8
+    stepsize = 0.5
     eta = 0.98
     N_sens = nw.N
-    N_s = 80000
+    N_s = 100000
 
     # true_norms = [2.2, 0.5, 1.2, 0.7, 1.0]
-    true_norms = [rng.uniform(0.5, 3.0) for i in range(N_sens)]
+    true_norms = [rng.uniform(0.5, 2.0) for i in range(N_sens)]
 
     h = np.array([]).reshape(0, 1)
     for n in range(N_sens):
@@ -107,10 +109,11 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
 if __name__ == "__main__":  # Necessary for module loading in condor processes :(
     cfg = simulation.SimConfig(
         id="icassp2023-static",
-        runs=50,
+        runs=30,
         seed=573438,
         variables=[
             {"alg": ["opt"], "SNR": [10], "gamma": [1.0], "iters": [1]},
+            {"alg": ["davgad"], "SNR": [10], "gamma": [1.0], "iters": [1, 2, 10]},
             {
                 "alg": ["davg"],
                 "SNR": [10],
@@ -162,12 +165,12 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # %%
     # Define condor job parameters
     user_submit = {
-        "request_walltime": "86000",  # Time in seconds
+        "request_walltime": "3600",  # Time in seconds
         "initialdir": ".",
         "notification": "Error",
         "executable": "/users/sista/mblochbe/python_venvs/admmstuff/bin/python",
         "request_cpus": "1",
-        "request_memory": "8GB",
+        "request_memory": "1GB",
     }
     # %%
     # Submit the condor jobs
@@ -190,11 +193,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.title("Title")
     plt.xlabel("Series [1]")
     plt.ylabel("Value [1]")
-    labels = [rf"{label}" for label in data.groups.keys()]
-    plt.plot(
-        20 * np.log10(data.median().to_numpy().T),
-        label=labels,
-    )
+    # labels = [rf"{label}" for label in data.groups.keys()]
+    plt.plot(20 * np.log10(data.median().T["opt", 1.0, 1]))
     plt.legend()
     plt.grid()
     plt.tight_layout()
@@ -209,25 +209,33 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.ylabel("Avg NPM [dB]")
 
     plt.plot(
-        cfg.variable_values[1]["gamma"],
+        cfg.variable_values[2]["gamma"],
         20
         * np.log10(data.median().T.tail(200).mean()["opt", 1.0, 1])
-        * np.ones_like(cfg.variable_values[1]["gamma"]),
+        * np.ones_like(cfg.variable_values[2]["gamma"]),
         "k--",
         label=f"optimal",
     )
     plt.plot(
-        cfg.variable_values[1]["gamma"],
+        cfg.variable_values[2]["gamma"],
+        20
+        * np.log10(data.median().T.tail(200).mean()["davgad", 1.0, 1])
+        * np.ones_like(cfg.variable_values[2]["gamma"]),
+        "-.",
+        label=f"adaptive",
+    )
+    plt.plot(
+        cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 1]),
         label=f"davg 1",
     )
     plt.plot(
-        cfg.variable_values[1]["gamma"],
+        cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 2]),
         label=f"davg 2",
     )
     plt.plot(
-        cfg.variable_values[1]["gamma"],
+        cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 10]),
         label=f"davg 10",
     )
@@ -239,8 +247,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.tight_layout()
     plt.show()
 
-# %%
-plt.plot(
+    # %%
+    plt.plot(
         cfg.variable_values[1]["gamma"],
         data.median().T.tail(200).mean()["davg", :, 1],
         "k--",

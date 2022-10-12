@@ -290,35 +290,35 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=f"optimal",
         markersize=3,
-        markevery=(1, 2),
+        markevery=(1, 500),
     )
     plt.plot(
         20 * np.log10(data.median().T["davgad", 1.0, 1]),
         styles.pop(),
         label=rf"adaptive $\gamma_i,\,K=1$",
         markersize=3,
-        markevery=(2, 2),
+        markevery=(50, 500),
     )
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.01, 1]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=1$",
         markersize=3,
-        markevery=(1, 2),
+        markevery=(100, 500),
     )
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.01, 2]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=2$",
         markersize=3,
-        markevery=(1, 2),
+        markevery=(150, 500),
     )
     plt.plot(
         20 * np.log10(data.median().T["davg", 0.01, 1]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=10$",
         markersize=3,
-        markevery=(1, 2),
+        markevery=(200, 500),
     )
     plt.legend()
     plt.grid()

@@ -50,7 +50,8 @@ Simulation results show how the extension leads to BSI performance close to an o
 \section{DISTRIBUTED ADAPTIVE BSI IN SENSOR NETWORKS WITH ONLINE-ADMM}
 \label{sec:dbsi}
 \begin{todo}
-    Introduce signal model, \(\h\),...
+    Introduce signal model, \(\h\),...\\
+    Illustration
 \end{todo}
 In this section, we will introduce certain parts of an adaptive SIMO BSI algorithm based on Online-ADMM \cite{blochbergerDBSI}, which are necessary for the reader to understand its extension of it.
 We refer the reader to the publication cited above for the full derivation of the algorithm.
@@ -180,7 +181,7 @@ The combination of instantaneous values and distributed averaging estimate leads
     }
 \end{algorithm}
 
-\section{Effect on transmission cost}
+\section{Transmission cost}
 \label{sec:transcost}
 To describe the communication cost within the network, we adopt the Big-O notation similar to the complexity analysis of algorithms.
 We consider the communication of a variable from one node to another as \(\mathcal{O}(1)+\mathcal{O}(1)\), where the two terms represent transmit and receive operations, respectively, as both require computational resources at a node.
@@ -210,11 +211,11 @@ Refer to \autoref{tab:transcost:table} for the collected orders of communication
     \label{tab:transcost:table}
 \end{table}
 
-\begin{figure}
+\begin{figure}[t]
     \centering
     % \input{simulations/plots/transcost/transcost.pgf}
     \input{simulations/plots/transcostnode/transcostnode.pgf}
-    \vspace*{-0.8cm}
+    % \vspace*{-0.8cm}
     \caption[]{A graphical representation of the order of transmission cost of a single node within the network dependent on network size. One can observe that with neighborhood }
     \label{fig:transcost:bigo}
 \end{figure}
@@ -226,9 +227,14 @@ Simulations and results.
     \item evaluate on time-varying norms of IRs
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[t]
     \centering
     \input{simulations/plots/icassp2023-static/icassp2023-static.pgf}
+    \caption[]{}
+\end{figure}
+\begin{figure}[t]
+    \centering
+    \input{simulations/plots/icassp2023-static-time/icassp2023-static-time.pgf}
     \caption[]{}
 \end{figure}
 

@@ -217,11 +217,11 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     utils.savefig(fig, "icassp2023-static_plot", format="png")
 
     # %%
-    styles = ["--<", "-->", "--v", "--s", "--o"]
+    styles = ["-<", "->", "-v", "-s", "-o"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
-    plt.xlabel(r"$\gamma$ [1]")
-    plt.ylabel("Avg NPM [dB]")
+    plt.xlabel(r"Mixing factor $\gamma$ [1]")
+    plt.ylabel("Avg. NPM [dB]")
 
     plt.plot(
         cfg.variable_values[2]["gamma"],

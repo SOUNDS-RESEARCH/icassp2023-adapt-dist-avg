@@ -2,9 +2,23 @@
 import os
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+
+# import matplotlib.pyplot as plt
 import python_utils.utils as utils
 import python_utils.simulation as simulation
+
+import matplotlib
+
+matplotlib.use("pgf")
+import matplotlib.pyplot as plt
+
+plt.rcParams.update(
+    {
+        "font.family": "serif",  # use serif/main font for text elements
+        "text.usetex": True,  # use inline math for ticks
+        "pgf.rcfonts": False,  # don't setup fonts from rc parameters
+    }
+)
 
 
 # %%
@@ -113,7 +127,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         seed=573438,
         variables=[
             {"alg": ["opt"], "SNR": [10], "gamma": [1.0], "iters": [1]},
-            {"alg": ["davgad"], "SNR": [10], "gamma": [1.0], "iters": [1, 2, 10]},
+            {"alg": ["davgad"], "SNR": [10], "gamma": [1.0], "iters": [1]},
             {
                 "alg": ["davg"],
                 "SNR": [10],
@@ -158,7 +172,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     sim.clearTmpData()
     # %%
     # Run the simulation locally with n processes
-    sim.runLocal(nprocesses=4, showprogress=True)
+    sim.runLocal(nprocesses=8, showprogress=True)
     # %%
     # Get the result after completion
     result = sim.getResult()
@@ -203,7 +217,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     utils.savefig(fig, "icassp2023-static_plot", format="png")
 
     # %%
-    fig = plt.figure(figsize=(6, 4))
+    styles = ["--<", "-->", "--v", "--s", "--o"]
+    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
     plt.xlabel(r"$\gamma$ [1]")
     plt.ylabel("Avg NPM [dB]")
@@ -213,7 +228,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20
         * np.log10(data.median().T.tail(200).mean()["opt", 1.0, 1])
         * np.ones_like(cfg.variable_values[2]["gamma"]),
-        "k--",
+        "k-.",
         label=f"optimal",
     )
     plt.plot(
@@ -221,37 +236,39 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20
         * np.log10(data.median().T.tail(200).mean()["davgad", 1.0, 1])
         * np.ones_like(cfg.variable_values[2]["gamma"]),
-        "-.",
-        label=f"adaptive",
+        "-",
+        label=rf"adaptive $\gamma_i$",
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 1]),
-        label=f"davg 1",
+        styles.pop(),
+        label=rf"$K=1$",
+        markersize=3,
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 2]),
-        label=f"davg 2",
+        styles.pop(),
+        label=rf"$K=2$",
+        markersize=3,
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 10]),
-        label=f"davg 10",
+        styles.pop(),
+        label=rf"$K=10$",
+        markersize=3,
     )
 
     plt.grid()
-    plt.ylim(-35, 0)
+    plt.ylim(-50, 0)
     plt.xlim(0, 0.04)
     plt.legend()
     plt.tight_layout()
     plt.show()
 
     # %%
-    plt.plot(
-        cfg.variable_values[1]["gamma"],
-        data.median().T.tail(200).mean()["davg", :, 1],
-        "k--",
-    )
+    utils.savefig(fig, "icassp2023-static", format="pgf", pgf_font="serif")
 
 # %%

@@ -1,6 +1,6 @@
 {
     "id": "icassp2023-static",
-    "runs": 50,
+    "runs": 30,
     "seed": 573438,
     "variable_values": [
         {
@@ -28,9 +28,7 @@
                 1.0
             ],
             "iters": [
-                1,
-                2,
-                10
+                1
             ]
         },
         {

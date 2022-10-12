@@ -14,27 +14,7 @@
 % ---------------
 \name{Matthias Blochberger\(^1\), Filip Elvander\(^2\), Toon, ...\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information.}}
 \address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland}
-%
-% For example:
-% ------------
-%\address{School\\
-%	Department\\
-%	Address}
-%
-% Two addresses (uncomment and modify for two-address case).
-% ----------------------------------------------------------
-% \twoauthors{M. Blochberger
-%     \thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the Research Foundation - Flanders (FWO) grant 12ZD622N.}}
-%         {KU Leuven\\
-%         Dept. of Electrical Engineering (ESAT), STADIUS\\
-%         % STADIUS\\
-%         3001 Leuven, Belgium}
-%         {Filip Elvander}
-%         {Aalto University\\
-%         Dept. of Electronic Systems\\
-%         % Section on Artificial Intelligence and Sound\\
-%         9220 Aalborg, Finland}
-%
+
 \begin{document}
 % \ninept
 %
@@ -67,43 +47,26 @@ In this paper, we extend \cite{blochbergerDBSI} with a distributed averaging-bas
 The mixing factor allows us (i) to reduce the number of secondary iterations significantly (down to 1) and (ii) track time-varying systems.
 Simulation results show how the extension leads to BSI performance close to an optimal case where all information is available without the need of broadcasting variables to all nodes or a large number of estimation iterations.
 
-% Main contribution: Avoid broadcasting or relaying of norm values, with distributed averaging approach and low iteration count.
-% Algorithms using a similar approach: \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016,liuDistributedRecursiveBlind2017}, however these use high numbers of iterations (30) which leads to many per-frame transmissions.
-% Argument against broadcasting: (1)Large-scale networks, where not all nodes can physically communicate with each other, but that is not really that relevant for room acoustics... (2) just because. this is the network topology and configuratinos that was chosen as in a lot of literature.
-
-% Important context in introduction: BSI, WSN, topology, connection matrix, 
-
-% What to show:
-% \begin{itemize}
-%   \item Algorithm extension
-%   \item Results
-%   \begin{itemize}
-%     \item compare results of unextended algorithm (optimal case)
-%     \item with extended: varied iteration count (more iterations: better result, BUT also even 1 iteration can lead to good results)
-%     \item varied mixing factor (there is some optimal \(\gamma\) apparently)
-%     \item Show transmission cost: transmission cost over number of nodes
-%   \end{itemize}
-% \end{itemize}
-
 \section{DISTRIBUTED ADAPTIVE BSI IN SENSOR NETWORKS WITH ONLINE-ADMM}
 \label{sec:dbsi}
 \begin{todo}
-  Introduce signal model, \(\h\),...
+    Introduce signal model, \(\h\),...
 \end{todo}
-% In \cite{blochbergerDBSI}, we proposed an adaptive SIMO BSI algorithm based on Online-ADMM.
 In this section, we will introduce certain parts of an adaptive SIMO BSI algorithm based on Online-ADMM \cite{blochbergerDBSI}, which are necessary for the reader to understand its extension of it.
 We refer the reader to the publication cited above for the full derivation of the algorithm.
 
 We assume a set \(\Mset \triangleq \{1,\ldots,M\}\) sensor nodes and a set of edges \(\mathcal{E}\) which connect the nodes forming a sensor network.
 Each edge is an unordered pair of nodes \(\{i,j\} \in \mathcal{E}\), which represents the communication link between them.
 From this follows the neighborhood of a node \(i\), i.e., the other nodes it is directly connected to, defined as \(\Nset_i = \{j|\{i,j\} \in \mathcal{E}\}\).
+It is to note, that we define the set with \(i \in \Nset_i\) for ease of notation later.
+This does however not represent an actual inter-node link.
 Furthermore, we can define the symmetric adjacency matrix \(\mtxb{C}\) with elements
 \begin{equation}
-  c_{ij} = \begin{cases}
-    1 \quad \text{if } i = j\\
-    1 \quad \text{if } i \neq j \text{ and }\{i,j\} \in \mathcal{E}\\
-    0 \quad \text{otherwise}.
-  \end{cases}
+    c_{ij} = \begin{cases}
+        1 \quad \text{if } i = j\\
+        1 \quad \text{if } i \neq j \text{ and }\{i,j\} \in \mathcal{E}\\
+        0 \quad \text{otherwise}.
+    \end{cases}
 \end{equation}
 It is to note that in \cite{blochbergerDBSI}, the pairs \(\{i,j\} \in \mathcal{E}\) are ordered, which yields a directed graph and leads to two sets of neighborhoods ("transmit" and "receive") and therefore a non-symmetric adjacency matrix.
 In this paper, we limit the explanation to the undirected graph to save space, as the extension is straightforward.
@@ -111,137 +74,163 @@ In this paper, we limit the explanation to the undirected graph to save space, a
 In BSI, the coss-relation problem formulation uses relative information between sensor signals to identify the system, i.e., the acoustic or communication channels.
 The solution to this problem is found by the minimization problem (cf. e.g. \cite{langtongBlindIdentificationEqualization1994,huangAdaptiveMultichannelLeast2002,huangClassFrequencydomainAdaptive2003})
 \begin{equation}
-  \begin{aligned}
-      \hat{\h} = \arg \min_{\h} \quad &\h^\herm \hat{\R} \h \\
-      \text{s.t. } \quad &\h^\herm \h = 1.
-  \end{aligned}\label{eq:frequency_domain:min_prob}
+    \begin{aligned}
+        \hat{\h} = \arg \min_{\h} \quad &\h^\herm \hat{\R} \h \\
+        \text{s.t. } \quad &\h^\herm \h = 1.
+    \end{aligned}\label{eq:frequency_domain:min_prob}
 \end{equation}
 \begin{todo}
-  Introduce \(\w, \uu\)
+    Introduce \(\w, \uu\)
 \end{todo}
 Separating the cost function and appying general-form consensus ADMM as an adaptive algorithm leads to the update steps
 \begin{align}
-  \w_i^{m+1} &= \underset{\w_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\w,\h^m,\uu^m)\label{eq:general_consensus_admm:local}\\
-  \h^{m+1} &= \underset{\h, \|\h\| = 1}{\operatorname{argmin}}\, \mathcal{L}_{\rho} (\w^{m+1},\h,\uu^m)\label{eq:general_consensus_admm:global}\\
-  \uu_i^{m+1} &= \uu_i^{m} + \rho \left( \w_i^{m+1} - \tilde{\h}_i^{m+1} \right).\label{eq:general_consensus_admm:dual}
+    \w_i^{m+1} &= \underset{\w_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\w,\h^m,\uu^m)\label{eq:general_consensus_admm:local}\\
+    \h^{m+1} &= \underset{\h, \|\h\| = 1}{\operatorname{argmin}}\, \mathcal{L}_{\rho} (\w^{m+1},\h,\uu^m)\label{eq:general_consensus_admm:global}\\
+    \uu_i^{m+1} &= \uu_i^{m} + \rho \left( \w_i^{m+1} - \tilde{\h}_i^{m+1} \right).\label{eq:general_consensus_admm:dual}
 \end{align}
-Here, the second step, the update of the so-called consensus variables are of interest for this extension.
+Here, the second step, the update of the so-called consensus variables, is of interest for this extension.
 It is defined \cite{blochbergerDBSI} as
 \begin{equation}
     \h_i^{m+1} = \frac{\bar{\h}_i^{m+1}}{\|\h^{m+1}\|}\label{eq:online_admm:consensus_update}
 \end{equation}
 for each node \(i \in \Mset\) with the local unnormalized consensus \(\bar{\h}_i^{m+1}\), a combination of neigborhood averages of the channel response estimates and the dual variables of channel \(i\) respectively, computed at node \(i\).
 The denominator of \eqref{eq:online_admm:consensus_update}, \(\|\h\|\), is the stacked vector of the full system. This vector, however, is not available at any of the nodes in the network.
-In \cite{blochbergerDBSI}, we assume that partial squared norms of \(\|\h\|^2 = \sum_{i \in \Mset} \|\h_i\|^2\) are relayed throughout the network until all nodes have the information necessary.
+In \cite{blochbergerDBSI}, we assume that partial squared norms of \(\|\h\|^2 = \sum_{i \in \Mset} \|\bar{\h}_i\|^2\) are relayed throughout the network until all nodes have the information necessary.
 In \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016}, a similar global value is estimated by a distributed averaging approach, iteratively combining values within neighborhoods until convergence to a network-wide average.
 
-Subsequently, we introduce an extension to the algorithm described in \cite{blochbergerDBSI} using a fastest distributed linear averaging (FDLA) approach \cite{xiaoFastLinearIterations2004} with the further introduction of a mixing factor to include instantaneous values in the recursion.
+Subsequently, we introduce an extension to the algorithm described in \cite{blochbergerDBSI} using a fastest distributed linear averaging (FDLA) approach \cite{xiaoFastLinearIterations2004} to avoid the need of network wide data transmission, with the further introduction of an adaptive mixing factor to include instantaneous values in the recursion.
 
 \section{FDLA-based adaptive norm estimation}
 \label{sec:adaptivenormest}
-We define 
-The FDLA problem, as introduced in \cite{xiaoFastLinearIterations2004}, looks to find optimal weights for distributed linear combinations of the form \(\bm{\phi}^{k+1} = \W \bm{\phi}^{k}\) where \(\bm{\phi}^k = \begin{bmatrix} \phi_1^k & \ldots & \phi_M^k \end{bmatrix}^\T\) is a vector, which initially, at \(k=1\), contains a set of variables, of which an average should be computed iteratively.
-The problem comes in the form of a minimization problem
-\begin{equation}
-  \begin{aligned}
-    \min& \quad \| \W - \bm{1}\bm{1}^\T/n\|_2\\
-    \text{s.t.}& \quad \W \in \mathcal{C},\, \bm{1}^\T \W = \bm{1}^\T,\, \W \bm{1}= \bm{1}
-  \end{aligned}
-\end{equation}
 
+The computation of the denominator of \eqref{eq:online_admm:consensus_update} requires knowledge of all \(\|\h_i\|^2\) at each node \(i \in \Mset\).
+To avoid the large number of transmission, which would be necessary to facilitate this, we will approximate the separable squared norm \(\hat{\phi}_i \approx \|\h\|^2= \sum_{i \in \Mset} \|\bar{\h}_i\|^2\) at each node \(i\) only using information shared within its neighborhood \(\Nset_i\).
+
+The FDLA problem, as introduced in \cite{xiaoFastLinearIterations2004}, looks to find optimal weights for distributed linear combinations of the form
+\begin{equation}
+    \phi_i({k+1}) = \sum_{j \in \Nset_i} W_{ij} \phi_j({k}),\quad i\in \Mset,\label{eq:adaptivenormest:distlincomb}
+\end{equation}
+which can be written in vector form as \(\bm{\phi}({k+1}) = \W \bm{\phi}({k})\) with \(\bm{\phi}(k) = \begin{bmatrix} \phi_1(k) & \ldots & \phi_M(k) \end{bmatrix}^\T\), a vector, which initially, at \(k=1\), contains a set of variables, of which an average should be computed.
+To find the optimal weights, the minimization problem
+\begin{equation}
+    \begin{aligned}
+        \min& \quad \| \W - \bm{1}\bm{1}^\T/n\|_2\\
+        \text{s.t.}& \quad \W \in \mathcal{C},\, \bm{1}^\T \W = \bm{1}^\T,\, \W \bm{1}= \bm{1}
+    \end{aligned}\label{eq:adaptivenormest:fdlaminprob}
+\end{equation}
+is solved.
 The set \(\mathcal{C} = \{\W \in \mathbb{R}^{M \times M} \vert W_{ij} = 0 \text{ if } \{i,j\} \notin \mathcal{E}\}\) describes all matrices with the same sparsity pattern as the adjacency matrix \(\mtxb{C}\).
-
-
-
-where the weights used by node \(i\) to combine values from neighbor nodes \(j \in \Nset_i\) are given at the \(i\)-th row. The distributed averaging approach is an iterative approach, however here, we will try to find a way to limit the number of iterations necessary. This goal comes from the fact that the iterations require data from neighboring nodes leading to additional transmissions (per frame).
-
-% We take avantage of the fact that the squared norm of the stacked solution vector can be separated into
-% \begin{equation}
-%   \| \h \|^2 = \sum_{j \in \Mset} \|\h_j\|^2.
-% \end{equation}
-We define the approximation of the global norm \(\hat{\phi}_i \approx \|\h\|^2\) at each node \(i\) at frame \(m\) as follows:
+Now, the \(i\)-th row of the optimal \(\W\) contains the neigborhood weights for node \(i\) as non-zero entries.
+\begin{todo}
+    This section reads awkward
+\end{todo}
+In usual applications of the iteration \eqref{eq:adaptivenormest:distlincomb}, it is applied \(K \in \mathbb{N}\) times until convergence of the averages is reached.
+This means that in an adaptive algorithm, where the resulting variable is required at each time frame \(m\), it introduces a secondary iteration of \(K\) loops per frame (e.g. \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016}).
+Each iteration requires information exchange within neighborhoods, which is why our approach is to try to split iterations over frames to keep \(K\) low.
+For this, we further introduce an instantaneous weighted neighborhood average of node-wise squared norm values \(\bar{\phi}_i^{m} = \sum_{j \in \Nset_i} W_{ij} \|\bar{\h}_i^m\|^2\) which is then combined with the FDLA estimate into
 \begin{equation}
-  \phi_i^{m,k+1} = \sum_{j \in \Nset_i} W_{ij} \phi_j^{m,k}\quad\text{for }k=1,\ldots,K\label{eq:dist_norm_est_iter}
+    \hat{\phi}_i^{m+1} = \gamma_i \bar{\phi}_i^{m} + (1-\gamma) \phi_i^{m}(K)
 \end{equation}
-with the initial value at \(m=1,k=1\) defined as \(\phi_i^{1,1}=\|\h_i^{1}\|^2\).
-\eqref{eq:dist_norm_est_iter} is applied \(K\) times.
-We now define the frame estimate of the global squared norm as
+where \(\gamma_i\) is a mixing factor.
+To avoid choosing a fixed value for \(\gamma_i\), we track stationarity of the instantaneous \(\bar{\phi}_i^{m}\) and set \(\gamma_i^{m}\) proportional to the absolute difference between subsequent frames
 \begin{equation}
-  \hat{\phi}_i^{m+1} = \gamma_i \bar{\phi}_i^{m} + (1-\gamma) \phi_i^{m,K}
+    \gamma_i^{m} = \min \left\lbrace \frac{| \bar{\phi}_i^{m} - \bar{\phi}_i^{m-1} |}{\bar{\phi}_i^{m-1}},\,1\right\rbrace.
 \end{equation}
-where \(\bar{\phi}_i^{m} = \sum_{j \in \Nset_i} W_{ij} \|\h_i^m\|^2\) is an instantaneous weighted neighborhood average of node-wise squared norm values and \(\gamma_i\) is a mixing factor.
-This factor can be chosen as a fixed value, where simulations have shown that values around \(\gamma_i = 0.02\) lead to satisfying results (cf. FIGURE) or adaptively.
-For this, we use the instantaneous values to track stationarity of the squared norms by setting the factor \(\gamma_i^{m}\) proportional to the absolute difference between instantaneous neighborhood norm values of subsequent frames
-\begin{equation}
-  \gamma_i^{m} = \min \left\lbrace \frac{| \bar{\phi}_i^{m} - \bar{\phi}_i^{m-1} |}{\bar{\phi}_i^{m-1}},\,1\right\rbrace.
-\end{equation}
-
-The special case of \(K=1\) leads to the update step:
-\begin{equation}
-  \hat{\phi}_i^{m+1} = \gamma_i \sum_{j \in \Nset_i} W_{ij} \| \bar{\h}_j^{m+1} \|^2 + (1-\gamma_i) \sum_{j \in \Nset_i} w_{ij} \hat{\phi}_j^m
-\end{equation}
-
-We use these in an inbetween step to estimate the norms of the channel impulse responses recursively. The full algorithm then looks like
+\begin{todo}
+    explain better why. Thought process: smaller difference \(| \bar{\phi}_i^{m} - \bar{\phi}_i^{m-1} |\) means estimate approaches some steady-state, which then means that putting more emphasis on norm estimation might lead to improvement: make \(\gamma\) smaller. \(| \bar{\phi}_i^{m} - \bar{\phi}_i^{m-1} | \rightarrow 0\) then \(\gamma_i \rightarrow 0\)
+\end{todo}
+The combination of instantaneous values and distributed averaging estimate leads to lower steady-state error when \(\gamma_i\) is chosen right, while with adaptive \(\gamma_i\), convergence speed increases as well.
+\autoref{alg:davg_norm_est} summarizes the procedure.
 
 \begin{algorithm}
-  \caption{Estimation of norm values}\label{alg:davg_norm_est}
-  $i\gets 10$\;
-  \eIf{$i\geq 5$}
-  {
-      $i\gets i-1$\;
-  }{
-      \If{$i\leq 3$}
-      {
-          $i\gets i+2$\;
-      }
-  }
+    \caption{ADMM BSI with FDLA-based adaptive estimation of norm values}\label{alg:davg_norm_est}
+    \(m\gets 1\)\;
+    \(\W \gets\) \eqref{eq:adaptivenormest:fdlaminprob}\;
+    \(\bar{\phi}_i^{0} \gets 1, \forall i \in \Mset\)\;
+    \For(){\(m=1\dots\)}
+    {
+        \For(){\(i \in \Mset\)}
+        {
+            \,\\
+            \dots\\
+            \(\w_i^m \gets \underset{\w_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\w,\h^m,\uu^m)\)\;
+            \(\bar{\h}_i^{m} \gets \) as defined in \cite{blochbergerDBSI}\;
+            Transmit \(\bar{\h}_i^{m}\) to nodes  \(j \in \Nset_i\)\;
+            \(\bar{\phi}_i^{m} \gets \sum_{j \in \Nset_i} W_{ij} \|\bar{\h}_i^m\|^2\)\;
+            \(\gamma_i^{m} \gets \min \left\lbrace \frac{| \bar{\phi}_i^{m} - \bar{\phi}_i^{m-1} |}{\bar{\phi}_i^{m-1}},\,1\right\rbrace\)\;
+            \eIf(){\(m = 1\)}
+            {
+                \(\phi_i^{m}(1) \gets \|\bar{\h}_i^m\|^2\)\;
+            }
+            {
+                \(\phi_i^{m}(1) \gets \phi_i^{m-1}(K)\)\;
+            }
+            \For(){\(k=1,\dots,K-1\)}
+            {
+                Transmit \(\phi_i(k)\) to nodes  \(j \in \Nset_i\)\;
+                \(\phi_i({k+1}) \gets \sum_{j \in \Nset_i} W_{ij} \phi_j({k})\)\;
+            }
+            \(\hat{\phi}_i^{m} \gets \gamma_i \bar{\phi}_i^{m} + (1-\gamma) \phi_i^{m}(K)\)\;
+            \(\h_i^{m} \gets \frac{\bar{\h}_i^{m}}{\sqrt{\hat{\phi}_i^{m}M}}\)\;
+            \dots\\
+            \(\uu_i^{m} \gets \uu_i^{m-1} + \rho \left( \w_i^{m} - \tilde{\h}_i^{m} \right)\)\;
+            \dots\\
+            % \,\\
+        }
+    }
 \end{algorithm}
 
-% \begin{align}
-%   \w_i^{m+1} &= \operatorname{argmin} \mathcal{L}_\rho(\w,\h,\uu)\\
-%   \bar{\h}_i^{m+1} &= \bar{\w}_i^{m+1} + \frac{1}{\rho} \bar{\uu}_i^m\\
-%   \phi_i^1 &= \hat{\phi}_i^{m}\\
-%   \phi_i^{k+1} &= \sum_{j \in \Nset_i} w_{ij} \phi_j^{k} \qquad\text{for } k=1,\ldots,K\\
-%   \hat{\phi}_i^{m+1} &= \gamma \| \bar{\h}_j^{m+1} \|^2 + (1-\gamma) \phi_i^K\\
-%   \h_i^{m+1} &= \frac{\bar{\h}_i^{m+1}}{\sqrt{\hat{\phi}_i^K\,M}}\\
-%   \uu_i^{m+1} &= \uu_i^{m} + \rho \left(\w_i^{m+1} - \tilde{\h}_i^{m+1}\right).
-% \end{align}
-
-\section{Transmission cost}
+\section{Effect on transmission cost}
 \label{sec:transcost}
-Show effect on number of transmissions. Scale up to high numbers of nodes so neigborhoods \(<<\) entire network.
-
-\begin{align}
-  \mathcal{O}(&(M-1)^2) & &+ & \mathcal{O}(&(M-1)^2)\\
-  \mathcal{O}(&M-1) & &+ & \mathcal{O}(&(M-1)^2)\\
-  \mathcal{O}(&M \bar{N}_i R) & &+ & \mathcal{O}(&M \bar{N}_i R)
-\end{align}
-
-Or per node:
-\begin{align}
-  \mathcal{O}(&M-1) & &+ & \mathcal{O}(&M-1)\\
-  \mathcal{O}(&1) & &+ & \mathcal{O}(&M-1)\\
-  \mathcal{O}(&\bar{N}_i R) & &+ & \mathcal{O}(&\bar{N}_i R)
-\end{align}
+To describe the communication cost within the network, we adopt the Big-O notation similar to the complexity analysis of algorithms.
+We consider the communication of a variable from one node to another as \(\mathcal{O}(1)+\mathcal{O}(1)\), where the two terms represent transmit and receive operations, respectively, as both require computational resources at a node.
+The most useful measure in the case of this work is to analyze the cost per node.
+For this we define an average neighborhood size \(\bar{N}_i = \frac{1}{M} \sum_{i \in \Mset} N_i\) where \(N_i = | \Nset_i |\) is the cardinality/size of the neigborhood set for node \(i\).
+We compare the following communication schemes: (1) a fully connected network, i.e., all nodes are linked with all other nodes by direct links; (2) network with broadcasting, i.e., the nodes transmit to all other nodes without direct links; (3) nodes only communicate with neighboring nodes.
+For (1), the cost increases quadratically with increasing network size \(M\) both in transmit and receive operations, whereas for (2), the quadratic increase happens only at the latter.
+Using communication scheme (3), as in \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016} and proposed in this paper, cost in proportional to neighborhood size and iteration count \(K\).
+Refer to \autoref{tab:transcost:table} for the collected orders of communication cost.
+\begin{todo}
+    this seems small for a full section header
+\end{todo}
+\begin{table}
+    \centering
+    \begin{tabular}{ |c|c|c| } 
+        \hline
+        & Transmit & Receive \\
+        \hline\hline
+        Full & \(\mathcal{O}(M-1)\) & \(\mathcal{O}(M-1)\) \\
+        \hline
+        Broadcast & \(\mathcal{O}(1)\) & \(\mathcal{O}(M-1)\) \\ 
+        \hline
+        Neigborhood & \(\mathcal{O}(\bar{N}_i K)\) & \(\mathcal{O}(\bar{N}_i K)\) \\ 
+        \hline
+    \end{tabular}
+    \caption[]{}
+    \label{tab:transcost:table}
+\end{table}
 
 \begin{figure}
-  \centering
-  \input{simulations/plots/transcost/transcost.pgf}
-  \input{simulations/plots/transcostnode/transcostnode.pgf}
-  \vspace*{-0.8cm}
-  \caption[]{The order of transmission cost of entire network or single node (choose which to keep if at all.).}
-  \label{fig:transcost:bigo}
+    \centering
+    % \input{simulations/plots/transcost/transcost.pgf}
+    \input{simulations/plots/transcostnode/transcostnode.pgf}
+    \vspace*{-0.8cm}
+    \caption[]{A graphical representation of the order of transmission cost of a single node within the network dependent on network size. One can observe that with neighborhood }
+    \label{fig:transcost:bigo}
 \end{figure}
 
 \section{Simulations}
 \label{sec:simulations}
 Simulations and results.
 \begin{itemize}
-  \item compare results of unextended algorithm (optimal case where all norm values are known)
-  \item varied iteration count (more iterations: better result, BUT also even 1 iteration can lead to good results, which doesnt need additional communitation per frame)
-  \item varied mixing factor (the is some optimum apparently, but unknown why and what it means)
-  \item evaluate on time-varying norms of IRs
+    \item evaluate on time-varying norms of IRs
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \input{simulations/plots/icassp2023-static/icassp2023-static.pgf}
+    \caption[]{}
+\end{figure}
 
 \section[]{Conclusions}
 \label{sec:conclusions}

@@ -208,7 +208,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     data = result.df.groupby(["alg", "gamma", "iters"])
 
     # %%
-    styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
+    styles = ["-v", "-+", "-x", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
     plt.xlabel(r"Mixing factor $\gamma$ [1]")
@@ -221,7 +221,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         * np.ones_like(cfg.variable_values[2]["gamma"]),
         styles.pop(),
         label=f"optimal",
-        markersize=3,
+        markersize=4,
         markevery=(1, 2),
     )
     plt.plot(
@@ -231,7 +231,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         * np.ones_like(cfg.variable_values[2]["gamma"]),
         styles.pop(),
         label=rf"adaptive $\gamma_i,\,K=1$",
-        markersize=3,
+        markersize=4,
         markevery=(2, 2),
     )
     plt.plot(
@@ -239,7 +239,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 1]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=1$",
-        markersize=3,
+        markersize=4,
         markevery=(1, 2),
     )
     plt.plot(
@@ -247,7 +247,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 2]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=2$",
-        markersize=3,
+        markersize=4,
         markevery=(2, 2),
     )
     plt.plot(
@@ -255,7 +255,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T.tail(200).mean()["davg", :, 10]),
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=10$",
-        markersize=3,
+        markersize=4,
         markevery=(1, 2),
     )
 
@@ -282,8 +282,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T["opt", 1.0, 1]),
         "k-",
         label=f"_optimal",
-        markersize=3,
-        markevery=(1, 200),
+        markersize=4,
+        markevery=(1, 500),
         alpha=0.25,
     )
     plt.plot(
@@ -295,8 +295,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         ),
         "-",
         label=f"optimal",
-        markersize=3,
-        markevery=(1, 200),
+        markersize=4,
+        markevery=(1, 500),
         color=line.get_color(),
     )
     # #########
@@ -304,8 +304,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T["davgad", 1.0, 1]),
         "-",
         label=rf"_adaptive $\gamma_i,\,K=1$",
-        markersize=3,
-        markevery=(20, 200),
+        markersize=4,
+        markevery=(20, 500),
         alpha=0.25,
     )
     plt.plot(
@@ -317,8 +317,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         ),
         "-o",
         label=rf"adaptive $\gamma_i,\,K=1$",
-        markersize=3,
-        markevery=(20, 200),
+        markersize=4,
+        markevery=(20, 500),
         color=line.get_color(),
     )
     # #########
@@ -326,8 +326,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T["davg", 0.01, 1]),
         "-",
         label=rf"_$\gamma_i = 0.01,\,K=1$",
-        markersize=3,
-        markevery=(40, 200),
+        markersize=4,
+        markevery=(40, 500),
         alpha=0.25,
     )
     plt.plot(
@@ -339,8 +339,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         ),
         "-s",
         label=rf"$\gamma_i = 0.01,\,K=1$",
-        markersize=3,
-        markevery=(40, 200),
+        markersize=4,
+        markevery=(40, 500),
         color=line.get_color(),
     )
     # #########
@@ -348,8 +348,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T["davg", 0.01, 10]),
         "-",
         label=rf"_$\gamma_i = 0.01,\,K=10$",
-        markersize=3,
-        markevery=(60, 200),
+        markersize=4,
+        markevery=(60, 500),
         alpha=0.25,
     )
     plt.plot(
@@ -361,8 +361,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         ),
         "-x",
         label=rf"$\gamma_i = 0.01,\,K=10$",
-        markersize=3,
-        markevery=(60, 200),
+        markersize=4,
+        markevery=(60, 500),
         color=line.get_color(),
     )
     # #########
@@ -370,8 +370,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T["davg", 0.04, 1]),
         "-",
         label=rf"_$\gamma_i = 0.04,\,K=1$",
-        markersize=3,
-        markevery=(80, 200),
+        markersize=4,
+        markevery=(80, 500),
         alpha=0.25,
     )
     plt.plot(
@@ -383,8 +383,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         ),
         "-+",
         label=rf"$\gamma_i = 0.04,\,K=1$",
-        markersize=3,
-        markevery=(80, 200),
+        markersize=4,
+        markevery=(80, 500),
         color=line.get_color(),
     )
     # #########
@@ -392,8 +392,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         20 * np.log10(data.median().T["davg", 0.04, 10]),
         "-",
         label=rf"_$\gamma_i = 0.04,\,K=10$",
-        markersize=3,
-        markevery=(100, 200),
+        markersize=4,
+        markevery=(100, 500),
         alpha=0.25,
     )
     plt.plot(
@@ -405,8 +405,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         ),
         "-v",
         label=rf"$\gamma_i = 0.04,\,K=10$",
-        markersize=3,
-        markevery=(100, 200),
+        markersize=4,
+        markevery=(100, 500),
         color=line.get_color(),
     )
     # #########

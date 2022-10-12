@@ -249,7 +249,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=1$",
         markersize=3,
-        markevery=(3, 2),
+        markevery=(1, 2),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -257,7 +257,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=2$",
         markersize=3,
-        markevery=(4, 2),
+        markevery=(2, 2),
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -265,7 +265,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         styles.pop(),
         label=rf"fixed $\gamma_i,\,K=10$",
         markersize=3,
-        markevery=(5, 2),
+        markevery=(1, 2),
     )
 
     plt.grid()

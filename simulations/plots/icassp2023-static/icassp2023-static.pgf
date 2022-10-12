@@ -697,6 +697,10 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
+\pgfsys@transformshift{0.737482in}{1.528753in}%
+\pgfsys@useobject{currentmarker}{}%
+\end{pgfscope}%
+\begin{pgfscope}%
 \pgfsys@transformshift{0.996396in}{1.077933in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
@@ -785,6 +789,10 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
+\pgfsys@transformshift{0.866939in}{1.173555in}%
+\pgfsys@useobject{currentmarker}{}%
+\end{pgfscope}%
+\begin{pgfscope}%
 \pgfsys@transformshift{1.125853in}{0.980595in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
@@ -872,6 +880,14 @@
 \pgfpathclose%
 \pgfusepath{stroke,fill}%
 }%
+\begin{pgfscope}%
+\pgfsys@transformshift{0.737482in}{1.509567in}%
+\pgfsys@useobject{currentmarker}{}%
+\end{pgfscope}%
+\begin{pgfscope}%
+\pgfsys@transformshift{0.996396in}{0.953791in}%
+\pgfsys@useobject{currentmarker}{}%
+\end{pgfscope}%
 \begin{pgfscope}%
 \pgfsys@transformshift{1.255310in}{0.833171in}%
 \pgfsys@useobject{currentmarker}{}%

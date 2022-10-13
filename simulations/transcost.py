@@ -2,6 +2,7 @@
 import numpy as np
 import python_utils.utils as utils
 
+# %%
 import matplotlib
 
 matplotlib.use("pgf")
@@ -69,8 +70,8 @@ plt.show()
 utils.savefig(fig, "transcost", format="pgf", pgf_font="serif")
 
 # %%
-styles = ["-<", "->", "-v", "-s", "-o"]
-fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
+styles = ["-<", "-+", "-x", "-s", "-o"]
+fig = plt.figure(figsize=utils.set_size(245, 0.95, (1, 1)))
 # plt.title("Title")
 plt.xlabel("Network size M [1]")
 plt.ylabel(r"$\mathcal{O}(.)$ [1]")
@@ -85,7 +86,7 @@ for n_bar in N_bar:
             styles.pop(),
             label=r"$\bar{N}=$%d,$R=$%d" % (n_bar, r),
             markevery=(ss, 500),
-            markersize=3,
+            markersize=4,
         )
         ss += 50
 plt.legend(ncol=2, prop={"size": 7}, loc="center left", bbox_to_anchor=(0.1, 0.35))

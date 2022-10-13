@@ -223,6 +223,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=f"optimal",
         markersize=4,
         markevery=(1, 2),
+        markerfacecolor="none",
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -233,6 +234,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=rf"adaptive $\gamma_i,\,K=1$",
         markersize=4,
         markevery=(2, 2),
+        markerfacecolor="none",
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -241,6 +243,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=rf"fixed $\gamma_i,\,K=1$",
         markersize=4,
         markevery=(1, 2),
+        markerfacecolor="none",
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -249,6 +252,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=rf"fixed $\gamma_i,\,K=2$",
         markersize=4,
         markevery=(2, 2),
+        markerfacecolor="none",
     )
     plt.plot(
         cfg.variable_values[2]["gamma"],
@@ -257,6 +261,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=rf"fixed $\gamma_i,\,K=10$",
         markersize=4,
         markevery=(1, 2),
+        markerfacecolor="none",
     )
 
     plt.grid()
@@ -298,6 +303,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(1, 500),
         color=line.get_color(),
+        markerfacecolor="none",
     )
     # #########
     (line,) = plt.plot(
@@ -320,6 +326,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(20, 500),
         color=line.get_color(),
+        markerfacecolor="none",
     )
     # #########
     (line,) = plt.plot(
@@ -342,6 +349,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(40, 500),
         color=line.get_color(),
+        markerfacecolor="none",
     )
     # #########
     (line,) = plt.plot(
@@ -364,6 +372,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(60, 500),
         color=line.get_color(),
+        markerfacecolor="none",
     )
     # #########
     (line,) = plt.plot(
@@ -386,6 +395,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(80, 500),
         color=line.get_color(),
+        markerfacecolor="none",
     )
     # #########
     (line,) = plt.plot(
@@ -408,6 +418,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(100, 500),
         color=line.get_color(),
+        markerfacecolor="none",
     )
     # #########
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)

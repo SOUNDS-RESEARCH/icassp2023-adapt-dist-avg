@@ -87,6 +87,7 @@ for n_bar in N_bar:
             label=r"$\bar{N}=$%d,$R=$%d" % (n_bar, r),
             markevery=(ss, 500),
             markersize=4,
+            markerfacecolor="none",
         )
         ss += 50
 plt.legend(ncol=2, prop={"size": 7}, loc="center left", bbox_to_anchor=(0.1, 0.35))

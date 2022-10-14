@@ -16,12 +16,16 @@
 \address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland}
 
 \begin{document}
-% \ninept
+\ninept
 %
 \maketitle
 %
 \begin{abstract}
-  Distributed signal-processing algorithms in (wireless) sensor networks often aim to decentralize processing tasks to reduce transmission cost and computational complexity or avoid reliance on a single device for processing. In this contribution, we extend a distributed adaptive algorithm for blind system identification that relies on the knowledge of a stacked network-wide solution vector at each node, the computation of which requires either broadcasting or relaying of node-specific values to all other nodes. The extended algorithm employs a distributed-averaging-based estimation scheme to estimate the network-wide norm value by only using the information provided by neighboring sensor nodes. We introduce a mixing factor between instantaneous and recursion values for adaptivity in a time-varying system. The extension leads to a decreased number of transmissions while maintaining estimation performance close to the optimal case. Simulation results show how the mixing factor and the averaging scheme's number of iterations influence performance.
+    Distributed signal-processing algorithms in (wireless) sensor networks often aim to decentralize processing tasks to reduce communication cost and computational complexity or avoid reliance on a single device for processing.
+    In this contribution, we extend a distributed adaptive algorithm for blind system identification that relies on the knowledge of a stacked network-wide solution vector at each node, the computation of which requires either broadcasting or relaying of node-specific values to all other nodes.
+    The extended algorithm employs a distributed-averaging-based estimation scheme to estimate the network-wide norm value by only using the information provided by neighboring sensor nodes.
+    We introduce an adaptive mixing factor between instantaneous and recursion values for adaptivity in a time-varying system.
+    Simulation results show that the extension provides estimation results close to the optimal fully-connected-network case while reducing inter-node transmission significantly.
 \end{abstract}
 %
 \begin{keywords}
@@ -178,7 +182,7 @@ The combination of instantaneous values and distributed averaging estimate shoul
                 \(\phi_i^{m}(1) \gets \|\bar{\h}_i^m\|^2\)\;
             }
             {
-                \(\phi_i^{m}(1) \gets \phi_i^{m-1}(K)\)\;
+                \(\phi_i^{m}(1) \gets \hat{\phi}_i^{m-1}(K)\)\;
             }
             \For(){\(k=1,\dots,K\)}
             {
@@ -202,7 +206,7 @@ The combination of instantaneous values and distributed averaging estimate shoul
 
 \section{Evaluation}
 \label{sec:simulations}
-\subsection[]{Transmission cost}
+\subsection[]{Communication cost}
 \label{sec:transcost}
 \begin{table}[t]
     \centering
@@ -273,20 +277,35 @@ A comparison is made between the following cases:
     \itemsep-0.2em
     \item[(a)] all information is available for global norm computation ("optimal" in \autoref{fig:simulations:NPMtime} \& \autoref{fig:simulations:avgNPMgamma}),
     \item[(b)] neighborhood communication with fixed \(\gamma_i \in [0.0, 0.4]\) and \(K \in \{1,2,10\}\),
-    \item[(b)] neighborhood communication with adaptive \(\gamma_i\) \eqref{eq:adaptivenormest:adaptivegamma} and \(K=1\).
+    \item[(c)] neighborhood communication with adaptive \(\gamma_i\) \eqref{eq:adaptivenormest:adaptivegamma} and \(K=1\).
 \end{itemize}
 \autoref{fig:simulations:NPMtime} shows the median of 30 Monte-Carlo runs.
 We can observe that when fixing \(\gamma_i\), a tradeoff between convergence speed and steady-state error arises at low iteration counts (cf. also \autoref{fig:simulations:avgNPMgamma}).
 With \(K=10\), the performance comes close to the optimal case at the cost of additional communication between nodes.
 Compare that to the case with adaptive \(\gamma_i\) where even at \(K=1\), i.e., no additional communication for the recursive estimation scheme, convergence speed and steady-state error are close to the optimal case.
 
+\begin{todo}
+    TODO: dynamic scenario: add comparisons with optimal and static \(\gamma\) case, and describe in text, add figure captions, extend conclusion
+\end{todo}
 
-\begin{todo}
-    Now that I write this, i wonder if evaluating this extension would rather revolve around measuring how well the norms are approximated\dots
-\end{todo}
-\begin{todo}
-    evaluate on time-varying norms of IRs if there is space
-\end{todo}
+\begin{figure}[t]
+    \centering
+    \input{simulations/plots/icassp2023-dynamic-time/icassp2023-dynamic-time.pgf}
+    \caption[]{}
+    \label{fig:simulations:NPMtimedyn}
+\end{figure}
+\begin{figure}[t]
+    \centering
+    \input{simulations/plots/icassp2023-dynamic-norm/icassp2023-dynamic-norm.pgf}
+    \caption[]{}
+    \label{fig:simulations:normtime}
+\end{figure}
+\begin{figure}[t]
+    \centering
+    \input{simulations/plots/icassp2023-dynamic-norms/icassp2023-dynamic-norms.pgf}
+    \caption[]{}
+    \label{fig:simulations:normstime}
+\end{figure}
 
 \section[]{Conclusions}
 \label{sec:conclusions}

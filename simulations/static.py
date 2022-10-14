@@ -22,6 +22,7 @@ plt.rcParams.update(
         "font.family": "serif",  # use serif/main font for text elements
         "text.usetex": True,  # use inline math for ticks
         "pgf.rcfonts": False,  # don't setup fonts from rc parameters
+        "font.size": 9,
     }
 )
 
@@ -209,7 +210,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     styles = ["-v", "-+", "-x", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
+    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
     plt.xlabel(r"Mixing factor $\gamma$ [1]")
     plt.ylabel("Avg. NPM [dB]")
@@ -278,7 +279,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # Plot
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1)))
+    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
     plt.ylabel("NPM [dB]")

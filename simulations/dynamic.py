@@ -223,7 +223,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markerfacecolor="none",
     )
     plt.vlines(
-        [5000, 10000], 0.75, 1.25, colors=["k", "k"], linestyles=["dashed", "dashed"]
+        [5000, 10000], -30, 0, colors=["k", "k"], linestyles=["dashed", "dashed"]
     )
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
@@ -282,13 +282,11 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         "-",
         label=r"$\|\mathbf{h}_2\|$",
     )
-    plt.vlines(
-        [5000, 10000], 0.75, 1.25, colors=["k", "k"], linestyles=["dashed", "dashed"]
-    )
+    plt.vlines([5000, 10000], 0, 1, colors=["k", "k"], linestyles=["dashed", "dashed"])
     # #########
     plt.legend(ncol=3, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
-    # plt.ylim(-30, 0)
+    plt.ylim(0, 1)
     plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
     plt.show()

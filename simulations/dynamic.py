@@ -198,30 +198,6 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # plt.title("Title")
     plt.xlabel("Time [frames]")
     plt.ylabel("NPM [dB]")
-    # #########
-    # (line,) = plt.plot(
-    #     20 * np.log10(data.median().T["opt", 1.0, 1]),
-    #     "k-",
-    #     label=f"_optimal",
-    #     markersize=4,
-    #     markevery=(1, 500),
-    #     alpha=0.25,
-    # )
-    # plt.plot(
-    #     20
-    #     * np.log10(
-    #         np.convolve(
-    #             data.median().T["opt", 1.0, 1], np.ones(mavg) / mavg, mode="valid"
-    #         )
-    #     ),
-    #     "-",
-    #     label=f"optimal",
-    #     markersize=4,
-    #     markevery=(1, 500),
-    #     color=line.get_color(),
-    #     markerfacecolor="none",
-    # )
-    # #########
     (line,) = plt.plot(
         20 * np.log10(data.median().T["davgad", 0.0, 1][:frames]),
         "-",
@@ -246,103 +222,10 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         color=line.get_color(),
         markerfacecolor="none",
     )
-    # #########
-    # (line,) = plt.plot(
-    #     20 * np.log10(data.median().T["davg", 0.01, 1]),
-    #     "-",
-    #     label=rf"_$\gamma_i = 0.01,\,K=1$",
-    #     markersize=4,
-    #     markevery=(40, 500),
-    #     alpha=0.25,
-    # )
-    # plt.plot(
-    #     20
-    #     * np.log10(
-    #         np.convolve(
-    #             data.median().T["davg", 0.01, 1], np.ones(mavg) / mavg, mode="valid"
-    #         )
-    #     ),
-    #     "-s",
-    #     label=rf"$\gamma_i = 0.01,\,K=1$",
-    #     markersize=4,
-    #     markevery=(40, 500),
-    #     color=line.get_color(),
-    #     markerfacecolor="none",
-    # )
-    # # #########
-    # (line,) = plt.plot(
-    #     20 * np.log10(data.median().T["davg", 0.01, 10]),
-    #     "-",
-    #     label=rf"_$\gamma_i = 0.01,\,K=10$",
-    #     markersize=4,
-    #     markevery=(60, 500),
-    #     alpha=0.25,
-    # )
-    # plt.plot(
-    #     20
-    #     * np.log10(
-    #         np.convolve(
-    #             data.median().T["davg", 0.01, 10], np.ones(mavg) / mavg, mode="valid"
-    #         )
-    #     ),
-    #     "-x",
-    #     label=rf"$\gamma_i = 0.01,\,K=10$",
-    #     markersize=4,
-    #     markevery=(60, 500),
-    #     color=line.get_color(),
-    #     markerfacecolor="none",
-    # )
-    # # #########
-    # (line,) = plt.plot(
-    #     20 * np.log10(data.median().T["davg", 0.04, 1]),
-    #     "-",
-    #     label=rf"_$\gamma_i = 0.04,\,K=1$",
-    #     markersize=4,
-    #     markevery=(80, 500),
-    #     alpha=0.25,
-    # )
-    # plt.plot(
-    #     20
-    #     * np.log10(
-    #         np.convolve(
-    #             data.median().T["davg", 0.04, 1], np.ones(mavg) / mavg, mode="valid"
-    #         )
-    #     ),
-    #     "-+",
-    #     label=rf"$\gamma_i = 0.04,\,K=1$",
-    #     markersize=4,
-    #     markevery=(80, 500),
-    #     color=line.get_color(),
-    #     markerfacecolor="none",
-    # )
-    # # #########
-    # (line,) = plt.plot(
-    #     20 * np.log10(data.median().T["davg", 0.04, 10]),
-    #     "-",
-    #     label=rf"_$\gamma_i = 0.04,\,K=10$",
-    #     markersize=4,
-    #     markevery=(100, 500),
-    #     alpha=0.25,
-    # )
-    # plt.plot(
-    #     20
-    #     * np.log10(
-    #         np.convolve(
-    #             data.median().T["davg", 0.04, 10], np.ones(mavg) / mavg, mode="valid"
-    #         )
-    #     ),
-    #     "-v",
-    #     label=rf"$\gamma_i = 0.04,\,K=10$",
-    #     markersize=4,
-    #     markevery=(100, 500),
-    #     color=line.get_color(),
-    #     markerfacecolor="none",
-    # )
-    # #########
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     plt.ylim(-30, 0)
-    # plt.xlim(0, 6000)
+    plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%
@@ -358,32 +241,13 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.ylabel(r"$\|\|\mathbf{h}\|\|$ [1]")
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][frames : 2 * frames],
-        "k-",
-        # markersize=4,
-        # markevery=(20, 500),
-        # alpha=0.25,
+        "-",
     )
-    # plt.plot(
-    #     20
-    #     * np.log10(
-    #         np.convolve(
-    #             data.median().T["davgad", 0.0, 1][:frames],
-    #             np.ones(mavg) / mavg,
-    #             mode="valid",
-    #         )
-    #     ),
-    #     "-o",
-    #     label=rf"adaptive $\gamma_i,\,K=1$",
-    #     markersize=4,
-    #     markevery=(20, 500),
-    #     color=line.get_color(),
-    #     markerfacecolor="none",
-    # )
     # #########
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     # plt.ylim(-30, 0)
-    # plt.xlim(0, 6000)
+    plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%
@@ -396,36 +260,27 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
-    plt.ylabel(r"$\|\|\mathbf{h}\|\|$ [1]")
+    plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][2 * frames : 3 * frames].to_numpy(),
         "-",
-        label=r"$\|\|\mathbf{h}_0\|\|$",
-        # markersize=4,
-        # markevery=(20, 500),
-        # alpha=0.25,
+        label=r"$\|\mathbf{h}_0\|$",
     )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][3 * frames : 4 * frames].to_numpy(),
         "-",
-        label=r"$\|\|\mathbf{h}_1\|\|$",
-        # markersize=4,
-        # markevery=(20, 500),
-        # alpha=0.25,
+        label=r"$\|\mathbf{h}_1\|$",
     )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][4 * frames : 5 * frames].to_numpy(),
         "-",
-        label=r"$\|\|\mathbf{h}_2\|\|$",
-        # markersize=4,
-        # markevery=(20, 500),
-        # alpha=0.25,
+        label=r"$\|\mathbf{h}_2\|$",
     )
     # #########
     plt.legend(ncol=3, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     # plt.ylim(-30, 0)
-    # plt.xlim(0, 6000)
+    plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%

@@ -411,7 +411,7 @@ class Network:
         delta_norm_inst = np.abs(self.norm_inst - norm_inst)
         # gamma_ad = delta_norm_inst / self.norm_inst
 
-        gamma_ad = np.clip(self.gamma * delta_norm_inst / self.norm_inst, 0, 0.5) * 2
+        gamma_ad = np.clip(delta_norm_inst / self.norm_inst, 0.0, 1)
 
         self.gamma_ad.append(gamma_ad)
 
@@ -421,11 +421,12 @@ class Network:
             norms_ = self.W_opt @ norms_
 
         self.norms = gamma_ad * norm_inst + (1 - gamma_ad) * norms_
+        self.norms_ = norms_.copy()
 
         for node_key, node in self.nodes.items():
             self.z[node_key * self.L : (node_key + 1) * self.L] = pp[
                 node_key * self.L : (node_key + 1) * self.L
-            ] / (np.sqrt(norms_[node_key] * self.N))
+            ] / (np.sqrt(self.norms[node_key] * self.N))
 
         self.norm_t.append(np.linalg.norm(self.z))
 

@@ -240,7 +240,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\|\mathbf{h}\|\|$ [1]")
     (line,) = plt.plot(
-        data.mean().T["davgad", 0.0, 1][frames : 2 * frames],
+        data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy(),
         "-",
     )
     # #########

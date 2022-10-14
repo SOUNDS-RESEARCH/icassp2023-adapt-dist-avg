@@ -1,0 +1,27 @@
+{
+    "id": "icassp2023-dynamic",
+    "runs": 30,
+    "seed": 573438,
+    "variable_values": [
+        {
+            "alg": [
+                "davgad"
+            ],
+            "SNR": [
+                10
+            ],
+            "gamma": [
+                0.0
+            ],
+            "iters": [
+                1
+            ]
+        }
+    ],
+    "variables": [
+        "alg",
+        "SNR",
+        "gamma",
+        "iters"
+    ]
+}

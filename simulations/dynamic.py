@@ -236,6 +236,9 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
     plt.show()
+
+    ax = plt.gca()
+    box = ax.get_position()
     # %%
     utils.savefig(fig, "icassp2023-dynamic-time", format="pgf", pgf_font="serif")
 
@@ -260,12 +263,15 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         "-",
     )
     # #########
-    plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
+    # plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     plt.ylim(0.75, 1.25)
     plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
+    ax = plt.gca()
+    ax.set_position(box)
     plt.show()
+
     # %%
     utils.savefig(fig, "icassp2023-dynamic-norm", format="pgf", pgf_font="serif")
 
@@ -306,6 +312,8 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.ylim(0, 1)
     plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
+    ax = plt.gca()
+    ax.set_position(box)
     plt.show()
     # %%
     utils.savefig(fig, "icassp2023-dynamic-norms", format="pgf", pgf_font="serif")

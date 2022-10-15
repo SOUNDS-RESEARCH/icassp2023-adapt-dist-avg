@@ -245,7 +245,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
     # plt.title("Title")
-    plt.xlabel("Time [frames]")
+    # plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
     plt.vlines(
         [5000, 10000],
@@ -264,6 +264,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.grid()
     plt.ylim(0.75, 1.25)
     plt.xlim(0, 15000)
+    plt.xticks([])
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%
@@ -275,7 +276,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
     # plt.title("Title")
-    plt.xlabel("Time [frames]")
+    # plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}_i\|$ [1]")
     plt.vlines(
         [5000, 10000],
@@ -305,6 +306,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.grid()
     plt.ylim(0, 1)
     plt.xlim(0, 15000)
+    plt.xticks([])
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%

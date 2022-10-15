@@ -269,6 +269,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
     ax = plt.gca()
+    ax.set_xticklabels([])
     ax.set_position(box)
     plt.show()
 
@@ -313,6 +314,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
     ax = plt.gca()
+    ax.set_xticklabels([])
     ax.set_position(box)
     plt.show()
     # %%

@@ -315,7 +315,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.tight_layout(pad=0.5)
     ax = plt.gca()
     ax.set_xticklabels([])
-    ax.set_position(box)
+    ax.set_position(box.shrunk(1.0, 0.6))
     plt.show()
     # %%
     utils.savefig(fig, "icassp2023-dynamic-norms", format="pgf", pgf_font="serif")

@@ -198,6 +198,14 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # plt.title("Title")
     plt.xlabel("Time [frames]")
     plt.ylabel("NPM [dB]")
+    plt.vlines(
+        [5000, 10000],
+        -30,
+        0,
+        colors=["tab:gray", "tab:gray"],
+        linestyles=["dashed", "dashed"],
+        linewidth=[0.5, 0.5],
+    )
     (line,) = plt.plot(
         20 * np.log10(data.median().T["davgad", 0.0, 1][:frames]),
         "-",
@@ -222,9 +230,6 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         color=line.get_color(),
         markerfacecolor="none",
     )
-    plt.vlines(
-        [5000, 10000], -30, 0, colors=["k", "k"], linestyles=["dashed", "dashed"]
-    )
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     plt.ylim(-30, 0)
@@ -242,12 +247,17 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # plt.title("Title")
     plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
+    plt.vlines(
+        [5000, 10000],
+        0.75,
+        1.25,
+        colors=["tab:gray", "tab:gray"],
+        linestyles=["dashed", "dashed"],
+        linewidth=[0.5, 0.5],
+    )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy(),
         "-",
-    )
-    plt.vlines(
-        [5000, 10000], 0.75, 1.25, colors=["k", "k"], linestyles=["dashed", "dashed"]
     )
     # #########
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
@@ -266,7 +276,15 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
-    plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
+    plt.ylabel(r"$\|\mathbf{h}_i\|$ [1]")
+    plt.vlines(
+        [5000, 10000],
+        0,
+        1,
+        colors=["tab:gray", "tab:gray"],
+        linestyles=["dashed", "dashed"],
+        linewidth=[0.5, 0.5],
+    )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][2 * frames : 3 * frames].to_numpy(),
         "-",
@@ -282,7 +300,6 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         "-",
         label=r"$\|\mathbf{h}_2\|$",
     )
-    plt.vlines([5000, 10000], 0, 1, colors=["k", "k"], linestyles=["dashed", "dashed"])
     # #########
     plt.legend(ncol=3, prop={"size": 7}, columnspacing=0.5)
     plt.grid()

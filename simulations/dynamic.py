@@ -244,9 +244,10 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
+    relative_height = 0.6
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
+    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5 * relative_height))
     # plt.title("Title")
     # plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
@@ -270,7 +271,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.tight_layout(pad=0.5)
     ax = plt.gca()
     ax.set_xticklabels([])
-    ax.set_position(box)
+    ax.set_position(box.shrunk(1.0, relative_height))
     plt.show()
 
     # %%
@@ -278,9 +279,10 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
+    relative_height = 1.0
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
+    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5 * relative_height))
     # plt.title("Title")
     # plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}_i\|$ [1]")
@@ -315,7 +317,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.tight_layout(pad=0.5)
     ax = plt.gca()
     ax.set_xticklabels([])
-    ax.set_position(box.shrunk(1.0, 0.6))
+    ax.set_position(box.shrunk(1.0, relative_height))
     plt.show()
     # %%
     utils.savefig(fig, "icassp2023-dynamic-norms", format="pgf", pgf_font="serif")

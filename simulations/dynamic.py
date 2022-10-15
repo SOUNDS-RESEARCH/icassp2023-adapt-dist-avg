@@ -202,9 +202,9 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         [5000, 10000],
         -30,
         0,
-        colors=["tab:gray", "tab:gray"],
+        colors=["k", "k"],
         linestyles=["dashed", "dashed"],
-        linewidth=[0.5, 0.5],
+        linewidth=[0.75, 0.75],
     )
     (line,) = plt.plot(
         20 * np.log10(data.median().T["davgad", 0.0, 1][:frames]),
@@ -251,9 +251,9 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         [5000, 10000],
         0.75,
         1.25,
-        colors=["tab:gray", "tab:gray"],
+        colors=["k", "k"],
         linestyles=["dashed", "dashed"],
-        linewidth=[0.5, 0.5],
+        linewidth=[0.75, 0.75],
     )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy(),
@@ -281,9 +281,9 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         [5000, 10000],
         0,
         1,
-        colors=["tab:gray", "tab:gray"],
+        colors=["k", "k"],
         linestyles=["dashed", "dashed"],
-        linewidth=[0.5, 0.5],
+        linewidth=[0.75, 0.75],
     )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][2 * frames : 3 * frames].to_numpy(),

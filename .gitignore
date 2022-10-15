@@ -11,3 +11,4 @@ Template.pdf
 paper.pdf
 **/tmpdata/*
 **/*.pyc
+simulations/dynamic_tst.py

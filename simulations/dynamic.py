@@ -264,7 +264,6 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.grid()
     plt.ylim(0.75, 1.25)
     plt.xlim(0, 15000)
-    plt.xticks([])
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%
@@ -306,7 +305,6 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.grid()
     plt.ylim(0, 1)
     plt.xlim(0, 15000)
-    plt.xticks([])
     plt.tight_layout(pad=0.5)
     plt.show()
     # %%

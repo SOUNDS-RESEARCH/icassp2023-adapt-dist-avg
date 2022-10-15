@@ -310,7 +310,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=r"$\|\mathbf{h}_2\|$",
     )
     # #########
-    plt.legend(ncol=3, prop={"size": 7}, columnspacing=0.5)
+    plt.legend(ncol=1, prop={"size": 7}, columnspacing=0.5)
     plt.grid()
     plt.ylim(0, 1)
     plt.xlim(0, 15000)

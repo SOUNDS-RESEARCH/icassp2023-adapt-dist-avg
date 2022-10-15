@@ -247,7 +247,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     relative_height = 0.75
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5 * relative_height))
+    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.3))
     # plt.title("Title")
     # plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
@@ -268,7 +268,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.grid()
     plt.ylim(0.75, 1.25)
     plt.xlim(0, 15000)
-    plt.tight_layout(pad=0.5)
+    # plt.tight_layout(pad=0.5)
     ax = plt.gca()
     ax.set_xticklabels([])
     ax.set_position(box.shrunk(1.0, relative_height))
@@ -282,7 +282,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     relative_height = 0.75
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5 * relative_height))
+    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.3))
     # plt.title("Title")
     # plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}_i\|$ [1]")
@@ -314,7 +314,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.grid()
     plt.ylim(0, 1)
     plt.xlim(0, 15000)
-    plt.tight_layout(pad=0.5)
+    # plt.tight_layout(pad=0.5)
     ax = plt.gca()
     ax.set_xticklabels([])
     ax.set_position(box.shrunk(1.0, relative_height))

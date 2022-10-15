@@ -244,7 +244,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
-    relative_height = 0.6
+    relative_height = 0.75
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5 * relative_height))
@@ -279,7 +279,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
-    relative_height = 1.0
+    relative_height = 0.75
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
     fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5 * relative_height))

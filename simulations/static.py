@@ -209,9 +209,10 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     data = result.df.groupby(["alg", "gamma", "iters"])
 
     # %%
+    textwidth = 245
     conv_frames = 500
     styles = ["-v", "-+", "-x", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.5))
+    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.5))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
     plt.xlabel(r"Mixing factor $\gamma_i$ [1]")
     plt.ylabel("Avg. NPM [dB]")
@@ -282,7 +283,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # Plot
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(400, 1.0, (1, 1), 0.5))
+    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.5))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
     plt.ylabel("NPM [dB]")

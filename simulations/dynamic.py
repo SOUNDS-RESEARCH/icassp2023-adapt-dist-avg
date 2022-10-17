@@ -64,7 +64,8 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
             [0.0, 0.5, 0.5],
         ]
     )
-    nw.setAveragingWeights(W)
+    if alg != "opt":
+        nw.setAveragingWeights(W)
 
     rho = 1.0
     stepsize = 0.5
@@ -112,7 +113,10 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
     npm_error = []
     h_test = np.zeros(shape=h.shape)
     nw.reset()
-    nw.setRho(rho, stepsize, eta, 1, iters, gamma)
+    if alg == "opt":
+        nw.setRho(rho, stepsize, eta, 1)
+    else:
+        nw.setRho(rho, stepsize, eta, 1, iters, gamma)
     for k_admm_fq in range(0, len(true_norms) * N_s - 2 * L, hopsize):
         nw.step(x_x[k_admm_fq : k_admm_fq + 2 * L, :])
         error = 0
@@ -142,7 +146,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         runs=30,
         seed=573438,
         variables=[
-            {"alg": ["davgad"], "SNR": [10], "gamma": [0.0], "iters": [1]},
+            {"alg": ["davgad", "opt"], "SNR": [10], "gamma": [0.0], "iters": [1]},
         ],
     )
     # %%
@@ -192,10 +196,11 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
+    textwidth = 245
     plt.close("all")
     mavg = 10
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.4))
+    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.4))
     # plt.title("Title")
     plt.xlabel("Time [frames]")
     plt.ylabel("NPM [dB]")
@@ -236,10 +241,10 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.ylim(-30, 0)
     plt.xlim(0, 15000)
     plt.tight_layout(pad=0.5)
-    plt.show()
 
     ax = plt.gca()
     box = ax.get_position()
+    plt.show()
     # %%
     utils.savefig(fig, "icassp2023-dynamic-time", format="pgf", pgf_font="serif")
 
@@ -247,7 +252,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # Plot
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.4))
+    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.4))
     # plt.title("Title")
     # plt.xlabel("Time [frames]")
     plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
@@ -280,35 +285,50 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
+    true_norms = [[2.2, 0.5, 1.2], [2.2, 1.0, 1.2], [2.2, 0.5, 2.0]]
+    true_normed_norms = np.asarray(true_norms)
+    for n in range(true_normed_norms.shape[0]):
+        true_normed_norms[n, :] = np.square(true_normed_norms[n, :]) / np.sum(
+            np.square(true_normed_norms[n, :])
+        )
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(245, 1.0, (1, 1), 0.4))
+    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.4))
     # plt.title("Title")
     # plt.xlabel("Time [frames]")
-    plt.ylabel(r"$\|\mathbf{h}_i\|$ [1]")
-    plt.vlines(
-        [5000, 10000],
-        0,
-        1,
-        colors=["k", "k"],
-        linestyles=["dashed", "dashed"],
-        linewidth=[0.75, 0.75],
+    plt.ylabel(r"$\|\hat{\mathbf{h}}_i\|$ [1]")
+    # for n in range(true_normed_norms.shape[0]):
+    plt.plot(
+        [0, 5000, 5000, 10000, 10000, 15000],
+        np.repeat(true_normed_norms, 2, axis=0),
+        "k-.",
+        linewidth=0.75,
+        label=["true", "_true", "_true"],
     )
+    # plt.vlines(
+    #     [5000, 10000],
+    #     0,
+    #     1,
+    #     colors=["k", "k"],
+    #     linestyles=["dashed", "dashed"],
+    #     linewidth=[0.75, 0.75],
+    # )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][2 * frames : 3 * frames].to_numpy(),
         "-",
-        label=r"$\|\mathbf{h}_0\|$",
+        label=r"$\|\hat{\mathbf{h}}_1\|$",
     )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][3 * frames : 4 * frames].to_numpy(),
         "-",
-        label=r"$\|\mathbf{h}_1\|$",
+        label=r"$\|\hat{\mathbf{h}}_2\|$",
     )
     (line,) = plt.plot(
         data.mean().T["davgad", 0.0, 1][4 * frames : 5 * frames].to_numpy(),
         "-",
-        label=r"$\|\mathbf{h}_2\|$",
+        label=r"$\|\hat{\mathbf{h}}_3\|$",
     )
+
     # #########
     plt.legend(ncol=1, prop={"size": 7}, columnspacing=0.5)
     plt.grid()

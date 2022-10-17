@@ -5,7 +5,8 @@
     "variable_values": [
         {
             "alg": [
-                "davgad"
+                "davgad",
+                "opt"
             ],
             "SNR": [
                 10

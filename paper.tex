@@ -271,12 +271,12 @@ The most useful measure in the case of this work is to analyze the cost per node
 We compare the following communication schemes within the context of the algorithm \cite{blochbergerDBSI} this paper proposes the extension to:
 \begin{itemize}
     \itemsep-0.2em
-    \item[(1)] A fully connected network, where node \(i\) communicates \(\|\bar{\h}_i\|\) to all other nodes \(\{j \in \Nset_i = \Mset \setminus i\}\) directly, i.e., the neighborhood is the full network.
+    \item[(1)] A fully connected network, where node \(i\) communicates \(\|\bar{\h}_i\|\) to all other nodes \(\{j \in \Nset_i = \Mset\}\) directly, i.e., the neighborhood is the full network.
     \item[(2)] The node \(i\) broadcasts \(\|\bar{\h}_i\|\), i.e., it transmit to all other nodes \(\{j \in \Mset \setminus i\}\) without direct links.
-    \item[(3)] The node \(i\) communicates \(\|\bar{\h}_i\|\) only to neighboring nodes \(\{j \in \Nset_i \subset \Mset \setminus i\}\) and applies \(K\) distributed averaging iterations.
+    \item[(3)] The node \(i\) communicates \(\|\bar{\h}_i\|\) only to neighboring nodes \(\{j \in \Nset_i \subset \Mset\}\) and applies \(K\) distributed averaging iterations.
 \end{itemize}
 In this comparison, we only consider communication necessary for the computation of \eqref{eq:online_admm:consensus_update} as the rest of the algorithm is the same for our options.
-For (1) and (2), the cost per node increases linearly with network size \(M\), whereas for communication scheme (3), the cost is linearly dependent on neighborhood size \(N_i\) and iteration count \(K\) only.
+For (1) and (2), the cost per node increases linearly with network size \(M\), whereas for communication scheme (3), the cost is linearly dependent on neighborhood size \(N_i\) and iteration count \(K\) only and therefore independent of network size.
 The problem to be solved at each node \(i \in \Mset\) has complexity \(\mathcal{O}(M^2 L^2)\) for (1), with channel response length \(L\) (which means there is no reduction compared to a centralized approach).
 For (2) and (3), local complexity is \(\mathcal{O}(N_i^2 L^2)\), where \(N_i\) is the neighborhood size.
 Refer to \autoref{tab:transcost:table} for a direct comparison.

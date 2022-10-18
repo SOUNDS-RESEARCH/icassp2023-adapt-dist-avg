@@ -8,8 +8,8 @@ import python_utils.utils as utils
 import python_utils.simulation as simulation
 
 # %%
-import matplotlib
-import matplotlib.pyplot as plt
+# import matplotlib
+# import matplotlib.pyplot as plt
 
 # %%
 import matplotlib
@@ -130,10 +130,13 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
                 np.linalg.norm(e1) / np.linalg.norm(h[(n * L) : (n + 1) * L])
             )
         npm_error.append(np.sqrt(error))
-    norms_t = np.asarray(nw.norms_t).squeeze()
-    data = np.concatenate(
-        [npm_error, nw.norm_t, norms_t[:, 0], norms_t[:, 1], norms_t[:, 2]]
-    )
+    if alg != "opt":
+        norms_t = np.asarray(nw.norms_t).squeeze()
+        data = np.concatenate(
+            [npm_error, nw.norm_t, norms_t[:, 0], norms_t[:, 1], norms_t[:, 2]]
+        )
+    else:
+        data = np.concatenate([npm_error, np.zeros((len(npm_error) * 4,))])
     # ################################################################
     ## %%
     return data
@@ -211,6 +214,30 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         colors=["k", "k"],
         linestyles=["dashed", "dashed"],
         linewidth=[0.75, 0.75],
+    )
+    (line,) = plt.plot(
+        20 * np.log10(data.median().T["opt", 0.0, 1][:frames]),
+        "k-",
+        label=rf"_optimal",
+        markersize=4,
+        markevery=(20, 500),
+        alpha=0.25,
+    )
+    plt.plot(
+        20
+        * np.log10(
+            np.convolve(
+                data.median().T["opt", 0.0, 1][:frames],
+                np.ones(mavg) / mavg,
+                mode="valid",
+            )
+        ),
+        "-",
+        label=rf"optimal",
+        markersize=4,
+        markevery=(20, 500),
+        color=line.get_color(),
+        markerfacecolor="none",
     )
     (line,) = plt.plot(
         20 * np.log10(data.median().T["davgad", 0.0, 1][:frames]),

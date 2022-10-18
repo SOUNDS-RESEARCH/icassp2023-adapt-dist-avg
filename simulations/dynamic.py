@@ -354,7 +354,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         "-.",
         linewidth=1.0,
         label=["true", "_true", "_true"],
-        color="tab:gray",
+        color="k",
     )
     # #########
     plt.legend(ncol=1, prop={"size": 7}, columnspacing=0.5)

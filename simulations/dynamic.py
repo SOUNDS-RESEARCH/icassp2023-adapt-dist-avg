@@ -328,9 +328,10 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     plt.plot(
         [0, 5000, 5000, 10000, 10000, 15000],
         np.repeat(true_normed_norms, 2, axis=0),
-        "k-.",
-        linewidth=0.75,
+        "-.",
+        linewidth=1.0,
         label=["true", "_true", "_true"],
+        color="tab:gray"
     )
     # plt.vlines(
     #     [5000, 10000],

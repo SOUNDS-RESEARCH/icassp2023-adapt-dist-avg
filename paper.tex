@@ -12,8 +12,8 @@
 %
 % Single address.
 % ---------------
-\name{Matthias Blochberger\(^1\), Filip Elvander\(^2\), Toon, ...\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information.}}
-\address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland}
+\name{Matthias Blochberger\(^1\), Filip Elvander\(^2\), Randall Ali\(^1\), Toon van Waterschoot\(^1\),tbd\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the Research Foundation - Flanders (FWO) grant 12ZD622N as well as from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information. Source code available at \textcolor{red}{ADD URL}}}
+\address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland\\tbd}
 
 \begin{document}
 \ninept
@@ -94,10 +94,17 @@ In BSI, the coss-relation problem formulation only uses output signals \(\x_i(n)
 The solution to this problem is found by the minimization problem (cf. e.g. \cite{langtongBlindIdentificationEqualization1994,huangAdaptiveMultichannelLeast2002,huangClassFrequencydomainAdaptive2003,blochbergerDBSI})
 \begin{equation}
     \begin{aligned}
-        \arg \min_{\h} \quad &\h^\herm \R \h \\
+        \hat{\h} = \arg \min_{\h} \quad &\h^\herm \R \h \\
         \text{s.t. } \quad &\|\h\| = 1.
     \end{aligned}\label{eq:frequency_domain:min_prob}
 \end{equation}
+where the estimate is \(\hat{\h} = [\hat{\h}_1^\T,\,...,\,\hat{\h}_M^\T]^\T\).
+In \cite{blochbergerDBSI}, this problem is solved by a distributed adaptive algorithm that is based on separating the problem \eqref{eq:frequency_domain:min_prob} into node-wise subproblems of analogous form, whoever only using a subset channels, provided by neighboring nodes \(\Nset_i \subset \Mset\).
+General-form consensus alternating direction method of multipliers (ADMM) \cite{boydDistributedOptimizationStatistical2011} is applied in an adaptive updating scheme (Online-ADMM) \cite{wangOnlineAlternatingDirection2013,hosseiniOnlineDistributedADMM2014}.
+This leads to update steps for local, consensus, and dual variables (we refer the reader to \cite{blochbergerDBSI} for details).
+The consensus variable in the algorithm is the estimate of the system \(\hat{\h}\).
+In the distributed algorithm, each of its subvectors \(\hat{\h}_i\) is computed at the respective node \(i\).
+The update step for \(\hat{\h}_i\) is of interest for this extension.
 % Separating the cost function and applying general-form consensus ADMM as an adaptive algorithm leads to the update steps
 % \begin{align}
 %     \w_i^{n+1} &= \underset{\w_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\w,\h^n,\uu^n)\label{eq:general_consensus_admm:local}\\
@@ -106,11 +113,9 @@ The solution to this problem is found by the minimization problem (cf. e.g. \cit
 % \end{align}
 % where \(\w_i\) represents channels estimates of lower dimensional subproblems, solved locally by node \(i\), \(\h = [\hat{\h}_1^\T,\,...,\,\hat{\h}_M^\T]^\T\) the consensus variable (estimate of the system), and \(\uu_i\) are the dual variables.
 \begin{todo}
-    find a good way to introduce equation of interest without having to explain all the local, dual variables and parameter mapping in detail.
-    \(\h\) notation is confusing.
+    Is this enough? I fear i have to use a full page introducing all the local, consensus, dual variables, parameter mapping and the lagrangian etc. only to get to \eqref{eq:online_admm:consensus_update} and say that the denominator is what we are looking at...
 \end{todo}
-The updates of \(\hat{\h}_i\) are of interest for this extension.
-It is defined \cite{blochbergerDBSI} as
+It is defined as
 \begin{equation}
     \hat{\h_i}^{n+1} = \frac{\bar{\h}_i^{n+1}}{\sqrt{\sum_{j \in \Mset} \|\bar{\h}_j^{n+1}\|^2}}.\label{eq:online_admm:consensus_update}
 \end{equation}
@@ -126,7 +131,7 @@ Subsequently, we introduce an extension to the algorithm described in \cite{bloc
 
 \subsection[]{Distributed averaging}
 The computation of the denominator of \eqref{eq:online_admm:consensus_update} requires knowledge of all \(\|\bar{\h}_i\|^2\) at each node \(i \in \Mset\).
-To avoid the large number of transmission, which would be necessary to facilitate this, we will approximate the squared norm \(\sum_{i \in \Mset} \|\bar{\h}_i\|^2\) at each node \(i\) only using information shared within its neighborhood \(\Nset_i\).
+To avoid the large number of transmissions, which would be necessary to facilitate this, we will approximate the squared norm \(\sum_{i \in \Mset} \|\bar{\h}_i\|^2\) at each node \(i\) only using information shared within its neighborhood \(\Nset_i\).
 
 We look at distributed linear combinations with the iteration index \(k=0,...,K\),
 \begin{equation}
@@ -148,7 +153,7 @@ Now, the \(i\)-th row of \(\W\) contains the neigborhood weights for node \(i\) 
 %     This section reads awkward
 % \end{todo}
 % In usual applications of the iteration \eqref{eq:adaptivenormest:distlincomb}, it is applied \(K \in \mathbb{N}\) times until convergence of the averages is reached.
-In an adaptive algorithm, where the resulting variable is required at each time frame \(m\) such as e.g. \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016} and \cite{blochbergerDBSI}, it introduces \(K\) secondary iterations per frame.
+In an adaptive algorithm, where the resulting variable is required at each time frame \(n\) such as e.g. \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016} and \cite{blochbergerDBSI}, it introduces \(K\) secondary iterations per frame.
 Each iteration requires information exchange within neighborhoods, adding to the communication cost of the algorithm.
 In order to mitigate this, we split iterations over frames \(n\) to keep \(K\) as low as possible.
 However, as each frame introduces new data, we need to include this data into the recursion.
@@ -157,9 +162,9 @@ To this end, we further introduce an instantaneous weighted neighborhood average
     \hat{\phi}_i^{n+1} = \gamma_i \bar{\phi}_i^{n} + (1-\gamma_i) \phi_i^{n}(K)
 \end{equation}
 where \(\gamma_i\) is a mixing factor.
-With the right choice of mixing factor \(\gamma_i\), this leads to a reduction of distributed averaging iterations \(K\) (see \autoref{sec:simulations}) and improves behaviour of the algorithm when the norms \(\|\h_i\|\) are time-variant.
+With the right choice of mixing factor \(\gamma_i\), this leads to a reduction of distributed averaging iterations \(K\) and improves behaviour of the algorithm when the norms \(\|\h_i\|\) are time-variant (see \autoref{sec:simulations}).
 % The factor balances instantaneous values and the distributed averaging iterations, and we shoudl look at the two extreme cases for further insight.
-% For \(\gamma_i = 0\), only instantaneous neighborhood averages are used, which effectively leads to suboptimal computation, as \(\hat{\phi}_1^{n} = \hat{\phi}_2^{n} = \ldots = \hat{\phi}_M^{n}\) for large enough \(m\) will never be reached.
+% For \(\gamma_i = 0\), only instantaneous neighborhood averages are used, which effectively leads to suboptimal computation, as \(\hat{\phi}_1^{n} = \hat{\phi}_2^{n} = \ldots = \hat{\phi}_M^{n}\) for large enough \(n\) will never be reached.
 % For \(\gamma_i=1\), only the distributed averaging iterations are considered, i.e., we effectively combine the per-frame secondary recursion \eqref{eq:adaptivenormest:distlincomb} from \(K\) to \(mK\) iterations.
 % There however, no new data is introduced which leads to performance degradadation in the adaptive algorithm as it only considers inital estimates from \(m=1\), which might be far of the optimum.
 
@@ -171,14 +176,15 @@ We set \(\gamma_i^{n}\) proportional to the absolute difference between subseque
 \begin{equation}
     \gamma_i^{n} = \min \left\lbrace \frac{| \bar{\phi}_i^{n} - \bar{\phi}_i^{n-1} |}{\bar{\phi}_i^{n-1}},\,1\right\rbrace.\label{eq:adaptivenormest:adaptivegamma}
 \end{equation}
-The combination of instantaneous values and distributed averaging estimate should lead to lower steady-state error when \(\gamma_i\) is chosen right, while with adaptive \(\gamma_i\), convergence speed should increase as well.
-\autoref{alg:davg_norm_est} summarizes the procedure as is is introduced in this section.
+The initial value for \(\bar{\phi}_i^{n-1}\) for \(n=0\) can be set to an arbitrary real number, in our case 1.
+% The combination of instantaneous values and distributed averaging estimate should lead to lower steady-state error when \(\gamma_i\) is chosen right, while with adaptive \(\gamma_i\), convergence speed should increase as well.
+Refer to \autoref{alg:davg_norm_est} for the extended algorithm introduced in this section.
 
 \begin{algorithm}[t]
-    \caption{ADMM BSI with FDLA-based adaptive estimation of norm values}\label{alg:davg_norm_est}
+    \caption{ADMM BSI with distributed-averaging-based adaptive estimation of norm values}\label{alg:davg_norm_est}
     \(\W \gets\) \eqref{eq:adaptivenormest:fdlaminprob}\;
-    \(\bar{\phi}_i^{0} \gets 1, \forall i \in \Mset\)\;
-    \For(){\(n=1\dots\)}
+    \(\bar{\phi}_i^{n-1} \gets 1, \forall i \in \Mset\)\;
+    \For(){\(n=0\dots\)}
     {
         \For(){\(i \in \Mset\)}
         {
@@ -191,17 +197,17 @@ The combination of instantaneous values and distributed averaging estimate shoul
             Transmit \(\bar{\h}_i^{n}\) to nodes  \(j \in \Nset_i\)\;
             \(\bar{\phi}_i^{n} \gets \sum_{j \in \Nset_i} W_{ij} \|\bar{\h}_i^n\|^2\)\;
             \(\gamma_i^{n} \gets \min \left\lbrace \frac{| \bar{\phi}_i^{n} - \bar{\phi}_i^{n-1} |}{\bar{\phi}_i^{n-1}},\,1\right\rbrace\)\;
-            \eIf(){\(m = 1\)}
+            \eIf(){\(m = 0\)}
             {
                 \(\phi_i^{n}(1) \gets \|\bar{\h}_i^n\|^2\)\;
             }
             {
                 \(\phi_i^{n}(1) \gets \hat{\phi}_i^{n-1}(K)\)\;
             }
-            \For(){\(k=1,\dots,K\)}
+            \For(){\(k=0,\dots,K\)}
             {
-                Transmit \(\phi_i(k)\) to nodes  \(j \in \Nset_i\)\;
-                \(\phi_i({k+1}) \gets \sum_{j \in \Nset_i} W_{ij} \phi_j({k})\)\;
+                Transmit \(\phi_i^n(k)\) to nodes  \(j \in \Nset_i\)\;
+                \(\phi_i^n({k+1}) \gets \sum_{j \in \Nset_i} W_{ij} \phi_j^n({k})\)\;
             }
             \(\hat{\phi}_i^{n} \gets \gamma_i \bar{\phi}_i^{n} + (1-\gamma) \phi_i^{n}(K)\)\;
             \(\hat{\h_i}^{n} \gets \frac{\bar{\h}_i^{n}}{\sqrt{\hat{\phi}_i^{n}M}}\)\;
@@ -222,55 +228,77 @@ The combination of instantaneous values and distributed averaging estimate shoul
 \label{sec:simulations}
 \subsection[]{Communication cost}
 \label{sec:transcost}
+% \renewcommand{\arraystretch}{1.2}
 % \begin{table}[t]
 %     \centering
-%     \begin{tabular}{ |l|l|l| } 
+%     \begin{tabular}{ |l|l| } 
 %         \hline
-%         & Transmit & Receive \\
+%         & Cost \\
 %         \hline\hline
-%         (1) Full & \(\mathcal{O}(M-1)\) & \(\mathcal{O}(M-1)\) \\
+%         (1) Fully connected & \(\mathcal{O}(M)\) \\
 %         \hline
-%         (2) Broadcast & \(\mathcal{O}(1)\) & \(\mathcal{O}(M-1)\) \\ 
+%         (2) Broadcast & \(\mathcal{O}(M)\) \\ 
 %         \hline
-%         (3) Neigborhood & \(\mathcal{O}(\bar{N}_i K)\) & \(\mathcal{O}(\bar{N}_i K)\) \\ 
+%         (3) Neighborhood & \(\mathcal{O}(\bar{N}_i K)\) \\ 
 %         \hline
 %     \end{tabular}
 %     \caption[]{Comparison of communication cost.}
 %     \label{tab:transcost:table}
 % \end{table}
+% \renewcommand{\arraystretch}{1.0}
 \renewcommand{\arraystretch}{1.2}
 \begin{table}[t]
     \centering
-    \begin{tabular}{ |l|l|l| }
+    \begin{tabular}{ |l|l|l|l| }
         \hline
-        & Transmit & Receive \\
+        & Trans. Ops. & Rec. Ops. & Local Compl. \\
         \hline\hline
-        (1) Fully connected & \(\mathcal{O}(M^2)\) & \(\mathcal{O}(M^2)\) \\
+        (1) Fully connected & \(M-1\) & \(M-1\) & \(\mathcal{O}(M^2 L^2)\) \\
         \hline
-        (2) Broadcast & \(\mathcal{O}(M)\) & \(\mathcal{O}(M^2)\) \\ 
+        (2) Broadcast & \(1\) & \(M-1\) & \(\mathcal{O}(N_i^2 L^2)\)  \\ 
         \hline
-        (3) Neigborhood & \(\mathcal{O}(M \bar{N}_i K)\) & \(\mathcal{O}(M \bar{N}_i K)\) \\ 
+        (3) Neighborhood & \(N_i K\) & \(N_i K\) & \(\mathcal{O}(N_i^2 L^2)\)\\ 
         \hline
     \end{tabular}
-    \caption[]{Comparison of communication cost.}
+    % \caption[]{Comparison of communication cost (transmission operations \& receive operations) and local problem complexity for a node \(i\) within the network. \(M\) is the number of nodes within the network, \(N_i\) is the number neighboring nodes, \(L\) is the lenght of channel responses, \(K\) is the number of distributed averaging iterations.}
+    \caption[]{Comparison of communication cost (transmission operations \& receive operations) and local problem complexity for a node \(i\) within the network.}
     \label{tab:transcost:table}
 \end{table}
 \renewcommand{\arraystretch}{1.0}
-To describe the communication cost within the network, we adopt the Big-\(\mathcal{O}\) notation, similar to the complexity analysis of algorithms.
-We consider the communication of a variable from one node to another as \(\mathcal{O}(1)\).
+To describe the communication cost within the network, we count the number of variables transmitted per time frame \(n\).
 The most useful measure in the case of this work is to analyze the cost per node.
-For this we define an average neighborhood size \(\bar{N}_i = \frac{1}{M} \sum_{i \in \Mset} N_i\) where \(N_i = | \Nset_i |\) is the cardinality/size of the neigborhood set for node \(i\).
-We compare the following communication schemes:
+% For this we define an average neighborhood size \(\bar{N}_i = \frac{1}{M} \sum_{i \in \Mset} N_i\) where \(N_i = | \Nset_i |\) is the cardinality/size of the neigborhood set for node \(i\).
+We compare the following communication schemes within the context of the algorithm \cite{blochbergerDBSI} this paper proposes the extension to:
 \begin{itemize}
     \itemsep-0.2em
-    \item[(1)] A fully connected network, i.e., all nodes are linked with all other nodes by direct links, \(\Nset_i = \Mset\).
-    \item[(2)] The nodes employ broadcasting, i.e., the nodes transmit to all other nodes without direct links.
-    \item[(3)] The nodes only communicate with neighboring nodes, \(\Nset_i \subset \Mset\).
+    \item[(1)] A fully connected network, where node \(i\) communicates \(\|\bar{\h}_i\|\) to all other nodes \(\{j \in \Nset_i = \Mset \setminus i\}\) directly, i.e., the neighborhood is the full network.
+    \item[(2)] The node \(i\) broadcasts \(\|\bar{\h}_i\|\), i.e., it transmit to all other nodes \(\{j \in \Mset \setminus i\}\) without direct links.
+    \item[(3)] The node \(i\) communicates \(\|\bar{\h}_i\|\) only to neighboring nodes \(\{j \in \Nset_i \subset \Mset \setminus i\}\) and applies \(K\) distributed averaging iterations.
 \end{itemize}
-For (1), the cost increases quadratically with increasing network size \(M\), both in transmit and receive operations, whereas for (2), the quadratic increase happens only at the latter.
-Using communication scheme (3), as in \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016} and proposed in this paper, cost in proportional to neighborhood size and iteration count \(K\).
-Refer to \autoref{tab:transcost:table} for the collected orders of communication cost.
-
+In this comparison, we only consider communication necessary for the computation of \eqref{eq:online_admm:consensus_update} as the rest of the algorithm is the same for our options.
+For (1) and (2), the cost per node increases linearly with network size \(M\), whereas for communication scheme (3), the cost is linearly dependent on neighborhood size \(N_i\) and iteration count \(K\) only.
+The problem to be solved at each node \(i \in \Mset\) has complexity \(\mathcal{O}(M^2 L^2)\) for (1), with channel response length \(L\) (which means there is no reduction compared to a centralized approach).
+For (2) and (3), local complexity is \(\mathcal{O}(N_i^2 L^2)\), where \(N_i\) is the neighborhood size.
+Refer to \autoref{tab:transcost:table} for a direct comparison.
+% To describe the communication cost within the network, we adopt the Big-\(\mathcal{O}\) notation, similar to the complexity analysis of algorithms.
+% We consider the communication of a variable from one node to another as \(\mathcal{O}(1)\).
+% The most useful measure in the case of this work is to analyze the cost per node.
+% For this we define an average neighborhood size \(\bar{N}_i = \frac{1}{M} \sum_{i \in \Mset} N_i\) where \(N_i = | \Nset_i |\) is the cardinality/size of the neigborhood set for node \(i\).
+% We compare the following communication schemes:
+% \begin{itemize}
+%     \itemsep-0.2em
+%     \item[(1)] A fully connected network, i.e., all nodes are linked with all other nodes by direct links, \(\Nset_i = \Mset\).
+%     \item[(2)] The nodes employ broadcasting, i.e., the nodes transmit to all other nodes without direct links.
+%     \item[(3)] The nodes only communicate with neighboring nodes, \(\Nset_i \subset \Mset\).
+% \end{itemize}
+% For (1) and (2), the cost per node increases linearly with network size \(M\): \(\mathcal{O}(M)\).
+% Using communication scheme (3), as in \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016} and proposed as an extension to \cite{blochbergerDBSI} in this paper, cost is linearly dependent on neighborhood size \(N_i\) and iteration count \(K\) only: \(\mathcal{O}(\bar{N}_i K)\).
+% \begin{todo}
+%     Unsure, about this. Filips feedback: "Don't you want the complexity for the whole system here so that you can compare things? That us write the complexity for the fully connected system as well as the distributed systems, parametrized in such away that the reader can compare the two. Here, the reader sees \(M\) and \(\bar{N}_i,K\) and has no idea of how they relate to each other."\\
+%     But this shows how the communication cost as defined here goes from \(\mathcal{O}(M)\) to \(\mathcal{O}(\bar{N}_i K)\).\\
+%     Other option: not just communication cost: fully connected \(\mathcal{O}(M^2 L^2)\), broadcast \(\)
+% \end{todo}
+% Refer to \autoref{tab:transcost:table} for the collected orders of communication cost.
 % \begin{figure}[t]
 %     \centering
 %     \input{simulations/plots/transcostnode/transcostnode.pgf}
@@ -279,72 +307,64 @@ Refer to \autoref{tab:transcost:table} for the collected orders of communication
 %     \label{fig:transcost:bigo}
 % \end{figure}
 
-\subsection[]{Simulation}
+\subsection[]{Simulations}
 \begin{figure}[t]
     \centering
     \input{simulations/plots/icassp2023-static-time/icassp2023-static-time.pgf}
-    \caption[]{Median NPM of 30 randomized runs over time for optimal case where all node information is available (fully connected network/broadcasting), fixed values of \(\gamma_i\) with \(K \in \{1,10\}\), adaptive \(\gamma_i\) with \(K=1\). The adaptive method yields results very close to the optimal method. A moving average filter was applied to result curves for better readability (compare transparent and opaque lines). Hatched area indicates frames used in computations for \autoref{fig:simulations:avgNPMgamma}.}
+    \vspace*{-0.6cm}
+    \caption[]{Median NPM of 30 Monte-Carlo runs over time for optimal case where all node information is available (fully connected network/broadcasting), fixed values of \(\gamma_i\) with \(K \in \{1,10\}\), adaptive \(\gamma_i\) with \(K=1\). A moving average filter was applied to result curves for better readability (compare transparent and opaque lines). Hatched area indicates frames used in computations for \autoref{fig:simulations:avgNPMgamma}.}
     \label{fig:simulations:NPMtime}
 \end{figure}
 \begin{figure}[t]
     \centering
     \input{simulations/plots/icassp2023-static/icassp2023-static.pgf}
-    \caption[]{Mean over time of median NPM of 30 randomized runs after convergence for varied values for fixed \(\gamma_i\) on the interval \([0.0, 0.04]\) and \(K \in \{1,2,10\}\). Results for optimal method, and adaptive \(\gamma_i\) included for comparison. Hatched area in \autoref{fig:simulations:NPMtime} indicates frames used for computation of avg. NPM.}
+    \vspace*{-0.6cm}
+    \caption[]{Mean of 500 post-convergence frames of median NPM of 30 Monte-Carlo runs for fixed \(\gamma_i\) on the interval \([0.0, 0.04]\) and \(K \in \{1,2,10\}\). Results for optimal method, and adaptive \(\gamma_i\) included for comparison. Hatched area in \autoref{fig:simulations:NPMtime} indicates frames used for computation of avg. NPM.}
     \label{fig:simulations:avgNPMgamma}
 \end{figure}
-To evaluate the effectiveness of the proposed method, simulations were run.
-For this we define the error measure, the normalized projection misalignment
+To evaluate the effectiveness of the proposed extension, simulations were run.
+For this, we define the error measure as the normalized projection misalignment
 \begin{equation}
     \begin{aligned}
-        \text{NPM}(m) &= 20\,\log_{10} \frac{\left\| \mtxb{e} \right\|}{\left\|\h(m)\right\|},\\
-        \text{with}\quad \mtxb{e} &= \h(m) - \frac{\h^\T (m) \h_{\text{t}}}{\h_{\text{t}}^\T \h_{\text{t}}}\h(m),
+        \text{NPM}(n) &= 20\,\log_{10} \frac{\left\| \mtxb{e} \right\|}{\left\|\hat{\h}(n)\right\|},\\
+        \text{with}\quad \mtxb{e} &= \hat{\h}(n) - \frac{\hat{\h}^\T (n) \h}{\h^\T \h}\hat{\h}(n),
     \end{aligned}
 \end{equation}
-commonly used in BSI to compare estimated \(\h\) and true \(\h_t\).
-The simulation setup is a network with \(M=5\) nodes arranged in a ring topology, each node having \(|N_i|=2\) neighbors.
+commonly used in BSI to compare estimated \(\hat{\h}(n)\) and true \(\h\).
+
+The first simulation setup is a network with \(M=5\) nodes arranged in a ring topology, each node having \(|N_i|=2\) neighbors.
 The input signal is zero-mean white Gaussian noise (WGN), the impulse responses of length \(L=16\) are drawn from a normal distribution, and at each channel, independent WGN is added with \(\text{SNR}=10\,\text{dB}\).
 The norms of the impulse responses are scaled to random values drawn from the uniform distribution \(\mathcal{U}_{[0.5,2.0]}\).
 A comparison is made between the following cases:
 \begin{itemize}
     \itemsep-0.2em
-    \item[(a)] all information is available for global norm computation ("optimal" in \autoref{fig:simulations:NPMtime} \& \autoref{fig:simulations:avgNPMgamma}),
-    \item[(b)] neighborhood communication with fixed \(\gamma_i \in [0.0, 0.4]\) and \(K \in \{1,2,10\}\),
-    \item[(c)] neighborhood communication with adaptive \(\gamma_i\) \eqref{eq:adaptivenormest:adaptivegamma} and \(K=1\).
+    \item[(a)] \(\|\bar{\h}_i\|^2\) of all \(i \in \Mset\) is available for global norm computation ("optimal" in \autoref{fig:simulations:NPMtime} \& \autoref{fig:simulations:avgNPMgamma}),
+    \item[(b)] Inter-neighborhood communication with fixed \(\gamma_i \in [0.0, 0.4]\) and \(K \in \{1,2,10\}\),
+    \item[(c)] Inter-neighborhood communication with adaptive \(\gamma_i\) \eqref{eq:adaptivenormest:adaptivegamma} and \(K=1\).
 \end{itemize}
 \autoref{fig:simulations:NPMtime} shows the median of 30 Monte-Carlo runs.
 We can observe that when fixing \(\gamma_i\), a tradeoff between convergence speed and steady-state error arises at low iteration counts (cf. also \autoref{fig:simulations:avgNPMgamma}).
 With \(K=10\), the performance comes close to the optimal case at the cost of additional communication between nodes.
 Compare that to the case with adaptive \(\gamma_i\) where even at \(K=1\), i.e., no additional communication for the recursive estimation scheme, convergence speed and steady-state error are close to the optimal case.
 
-\begin{todo}
-    TODO: dynamic scenario: add comparisons with optimal and static \(\gamma\) case, and describe in text, add figure captions, extend conclusion
-\end{todo}
+The second simulation setup is a \(3\)-node ring topology with a neighborhood size of \(|N_i|=2\).
+The input signal, impulse responses, additive noise, and SNR have the same parameters as the first simulation.
+To test the algorithms response to time-variant scenarios, the 3 impulse responses are then scaled to norms of \([2.2, 0.5, 1.2],\, [2.2, 1.0, 1.2],\, [2.2, 0.5, 2.0]\) at frames \(0,\, 5000,\, 10000\) respectively.
+\autoref{fig:simulations:NPMtimedyn} (bottom) shows the median NPM of 30 Monte-Carlo runs, where we can observe very similar behavior of the optimal and distributed-averaging-based algorithms, where both algorithms reach a converged state after the rescaling events.
+It further shows the damped oscillations that appear in the estimates of \(\|\h^n\|\) around the target value 1 \autoref{fig:simulations:NPMtimedyn} (top) and \(\|\hat{\h}_i^n\|\) around the rescaled true norms \autoref{fig:simulations:NPMtimedyn} (middle), respectively.
 
-% \begin{figure}[t]
-%     \centering
-%     \input{simulations/plots/icassp2023-dynamic-time/icassp2023-dynamic-time.pgf}
-%     \caption[]{}
-%     \label{fig:simulations:NPMtimedyn}
-% \end{figure}
-% \begin{figure}[t]
-%     \centering
-%     \input{simulations/plots/icassp2023-dynamic-norm/icassp2023-dynamic-norm.pgf}
-%     \caption[]{}
-%     \label{fig:simulations:normtime}
-% \end{figure}
-% \begin{figure}[t]
-%     \centering
-%     \input{simulations/plots/icassp2023-dynamic-norms/icassp2023-dynamic-norms.pgf}
-%     \caption[]{}
-%     \label{fig:simulations:normstime}
-% \end{figure}
+In summary, the simulations show that the right choice of fixed \(\gamma_i\) leads to results close to an optimal case with \(K=1\) distributed averaging iterations.
+Further, introducing an adaptive \(\gamma_i^n\) allows the algorithm to converge faster and deal with time-variant systems.
+This is an improvement over \cite{blochbergerDBSI} as communication is only required within neighborhoods and over \cite{liuDistributedBlindIdentification2016,liuDistributedRecursiveBlind2017} needing only \(K=1\) instead of \(K=50\) iterations.
+
 
 \begin{figure}[t]
     \centering
     \input{simulations/plots/icassp2023-dynamic-norm/icassp2023-dynamic-norm.pgf}\\\vspace*{-1.0cm}
     \input{simulations/plots/icassp2023-dynamic-norms/icassp2023-dynamic-norms.pgf}\\\vspace*{-1.0cm}
     \input{simulations/plots/icassp2023-dynamic-time/icassp2023-dynamic-time.pgf}
-    \caption[]{}
+    \vspace*{-0.6cm}
+    \caption[]{Results of 30 Monte-Carlo runs: Top: Estimated \(\|\h^n\|\) over time, shown is the mean. Middle: Estimated \(\|\hat{\h}_i^n\|\) over time, shown is the mean. Dot-dashed lines are true values. Bottom: Median NPM, comparing optimal algorithm and proposed extended algorithm. Dashed vertical lines indicate rescaling events.}
     \label{fig:simulations:NPMtimedyn}
 \end{figure}
 
@@ -354,8 +374,12 @@ In this contribution, we propose an extension to a distributed adaptive BSI algo
 Based on distributed averaging, only using the information provided by neighboring nodes in the sensor network, we compute estimates of norm values of channel estimates in order to enforce a norm constraint.
 By balancing the averaging with introducing new data into the recursion, we allow the algorithm to follow an adaptive updating scheme.
 The mixing factor, which balances new data with recursion data, is set adaptively dependent on instantaneous channel estimate norms.
-
-These introductions reduce inter-node transmissions for each time frame and improve steady-state estimation performance to values close to the optimal case, where network-wide information is available at all nodes.
+These introductions reduce inter-node transmissions for each time frame while still delivering steady-state estimation performance close to the optimal case where network-wide information is available at all nodes.
+The reduction that can be achieved goes as far as only needing a single iteration and, therefore, one additional inter-neighborhood information exchange per time frame.
+We show this in simulations with a white Gaussian input signal and random impulse responses drawn from the normal distribution.
+\begin{todo}
+    Could use the little space that's left for an illustration in the beginning or something :)
+\end{todo}
 
 % Below is an example of how to insert images. Delete the ``\vspace'' line,
 % uncomment the preceding line ``\centerline...'' and replace ``imageX.ps''
@@ -389,7 +413,7 @@ These introductions reduce inter-node transmissions for each time frame and impr
 % %
 % \end{figure}
 
-\vfill\pagebreak
+% \vfill\pagebreak
 
 % References should be produced using the bibtex program from suitable
 % BiBTeX files (here: strings, refs, manuals). The IEEEbib.bst bibliography

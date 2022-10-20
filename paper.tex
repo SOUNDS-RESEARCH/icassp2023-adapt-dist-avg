@@ -320,48 +320,6 @@ A comparison is made between the following cases:
     \item[(b)] Inter-neighborhood communication with fixed \(\gamma_i \in [0.0, 0.4]\) and \(K \in \{1,2,10\}\),
     \item[(c)] Inter-neighborhood communication with adaptive \(\gamma_i\) \eqref{eq:adaptivenormest:adaptivegamma} and \(K=1\).
 \end{itemize}
-\autoref{fig:simulations:NPMtime} shows the median of 30 Monte-Carlo runs.
-We can observe that when fixing \(\gamma_i\), a tradeoff between convergence speed and steady-state error arises at low iteration counts (cf. also \autoref{fig:simulations:avgNPMgamma}).
-With \(K=10\), the performance comes close to the optimal case at the cost of additional communication between nodes.
-This in contrast to the case with adaptive \(\gamma_i\) where even at \(K=1\), i.e., no additional communication for the recursive estimation scheme, convergence speed and steady-state error are close to the optimal case.
-
-The second simulation setup is a \(3\)-node ring topology with a neighborhood size of \(|N_i|=2\).
-The input signal, impulse responses, additive noise, and SNR have the same parameters as the first simulation.
-To test the algorithms response to time-variant scenarios, the 3 impulse responses are then scaled to norms of \([2.2, 0.5, 1.2],\, [2.2, 1.0, 1.2],\, [2.2, 0.5, 2.0]\) at frames \(0,\, 5000,\, 10000\) respectively.
-\autoref{fig:simulations:NPMtimedyn} (bottom) shows the median NPM of 30 Monte-Carlo runs, where we can observe very similar behavior of the optimal and distributed-averaging-based algorithms, where both algorithms reach a converged state after the rescaling events.
-It further shows the damped oscillations that appear in the estimates of \(\|\hat{\h}^{(n)}\|\) around the target value 1 \autoref{fig:simulations:NPMtimedyn} (top) and \(\|\hat{\h}_i^{(n)}\|\) around the rescaled true norms \autoref{fig:simulations:NPMtimedyn} (middle), respectively.
-
-In summary, the simulations show that the right choice of fixed \(\gamma_i\) leads to results close to an optimal case with \(K=1\) distributed averaging iterations.
-Further, introducing an adaptive \(\gamma_i^{(n)}\) allows the algorithm to converge faster and deal with time-variant systems.
-This is an improvement over \cite{blochbergerDBSI} as communication is only required within neighborhoods and over \cite{liuDistributedBlindIdentification2016,liuDistributedRecursiveBlind2017} needing only \(K=1\) instead of \(K=50\) iterations.
-
-
-\begin{figure}[t]
-    \centering
-    \input{simulations/plots/icassp2023-dynamic-norm/icassp2023-dynamic-norm.pgf}\\\vspace*{-1.0cm}
-    \input{simulations/plots/icassp2023-dynamic-norms/icassp2023-dynamic-norms.pgf}\\\vspace*{-1.0cm}
-    \input{simulations/plots/icassp2023-dynamic-time/icassp2023-dynamic-time.pgf}
-    \vspace*{-0.6cm}
-    \caption[]{Results of 30 Monte-Carlo runs: Top: Estimated \(\|\h^{(n)}\|\) over time, shown is the mean. Middle: Estimated \(\|\hat{\h}_i^{(n)}\|\) over time, shown is the mean. Dot-dashed lines are true values. Bottom: Median NPM, comparing optimal algorithm and proposed extended algorithm. Dashed vertical lines indicate rescaling events.}
-    \label{fig:simulations:NPMtimedyn}
-\end{figure}
-
-\section[]{Conclusions}
-\label{sec:conclusions}
-In this contribution, we propose an extension to a distributed adaptive BSI algorithm applied in sensor networks.
-Based on distributed averaging, only using the information provided by neighboring nodes in the sensor network, we compute estimates of norm values of channel estimates in order to enforce a norm constraint.
-By balancing the averaging with introducing new data into the recursion, we allow the algorithm to follow an adaptive updating scheme.
-The mixing factor, which balances new data with recursion data, is set adaptively dependent on instantaneous channel estimate norms.
-These introductions reduce inter-node transmissions for each time frame while still delivering steady-state estimation performance close to the optimal case where network-wide information is available at all nodes.
-The reduction that can be achieved goes as far as only needing a single iteration and, therefore, one additional inter-neighborhood information exchange per time frame.
-We show this in simulations with a white Gaussian input signal and random impulse responses drawn from the normal distribution.
-\begin{todo}
-    \begin{itemize}
-        \item Scale up simulation (for first setup) to \(M >> N_i\), like M = 50 and neighborhoods like in Toon's paper.
-        \item minor changes to plot labels, legend layouts
-    \end{itemize}
-\end{todo}
-
 \begin{algorithm}[t]
     \caption{ADMM BSI with distributed-averaging-based adaptive estimation of norm values}\label{alg:davg_norm_est}
     \(\W \gets\) \eqref{eq:adaptivenormest:fdlaminprob}\;
@@ -376,7 +334,7 @@ We show this in simulations with a white Gaussian input signal and random impuls
             % \(\cdots\)\\
             \emph{The steps before are as introduced in }\cite{blochbergerDBSI}\\
             \dotfill\\
-            Transmit \(\bar{\h}_i^{(n)}\) to nodes  \(j \in \Nset_i\)\;
+            % Transmit \(\bar{\h}_i^{(n)}\) to nodes  \(j \in \Nset_i\)\;
             \(\eta_i^{(n)} \gets \sum_{j \in \Nset_i} W_{ij} \|\bar{\h}_i^{(n)}\|^2\)\;
             \(\gamma_i^{(n)} \gets \min \left\lbrace \frac{| \eta_i^{(n)} - \eta_i^{(n-1)} |}{\eta_i^{(n-1)}},\,1\right\rbrace\)\;
             \eIf(){\(n = 0\)}
@@ -402,6 +360,47 @@ We show this in simulations with a white Gaussian input signal and random impuls
         }
     }
 \end{algorithm}
+\autoref{fig:simulations:NPMtime} shows the median of 30 Monte-Carlo runs.
+We can observe that when fixing \(\gamma_i\), a tradeoff between convergence speed and steady-state error arises at low iteration counts (cf. also \autoref{fig:simulations:avgNPMgamma}).
+With \(K=10\), the performance comes close to the optimal case at the cost of additional communication between nodes.
+This in contrast to the case with adaptive \(\gamma_i\) where even at \(K=1\), i.e., no additional communication for the recursive estimation scheme, convergence speed and steady-state error are close to the optimal case.
+
+The second simulation setup is a \(3\)-node ring topology with a neighborhood size of \(|N_i|=2\).
+The input signal, impulse responses, additive noise, and SNR have the same parameters as the first simulation.
+To test the algorithms response to time-variant scenarios, the 3 impulse responses are then scaled to norms of \([2.2, 0.5, 1.2],\, [2.2, 1.0, 1.2],\, [2.2, 0.5, 2.0]\) at frames \(0,\, 5000,\, 10000\) respectively.
+\autoref{fig:simulations:NPMtimedyn} (bottom) shows the median NPM of 30 Monte-Carlo runs, where we can observe very similar behavior of the optimal and distributed-averaging-based algorithms, where both algorithms reach a converged state after the rescaling events.
+It further shows the damped oscillations that appear in the estimates of \(\|\hat{\h}^{(n)}\|\) around the target value 1 \autoref{fig:simulations:NPMtimedyn} (top) and \(\|\hat{\h}_i^{(n)}\|\) around the rescaled true norms \autoref{fig:simulations:NPMtimedyn} (middle), respectively.
+
+In summary, the simulations show that the right choice of fixed \(\gamma_i\) leads to results close to an optimal case with \(K=1\) distributed averaging iterations.
+Further, introducing an adaptive \(\gamma_i^{(n)}\) allows the algorithm to converge faster and deal with time-variant systems.
+This is an improvement over \cite{blochbergerDBSI} as communication is only required within neighborhoods and over \cite{liuDistributedBlindIdentification2016,liuDistributedRecursiveBlind2017} needing only \(K=1\) instead of \(K=50\) iterations per frame.
+\looseness=-1
+
+\begin{figure}[t]
+    \centering
+    \input{simulations/plots/icassp2023-dynamic-norm/icassp2023-dynamic-norm.pgf}\\\vspace*{-1.0cm}
+    \input{simulations/plots/icassp2023-dynamic-norms/icassp2023-dynamic-norms.pgf}\\\vspace*{-1.0cm}
+    \input{simulations/plots/icassp2023-dynamic-time/icassp2023-dynamic-time.pgf}
+    \vspace*{-0.6cm}
+    \caption[]{Results of 30 Monte-Carlo runs: Top: Estimated \(\|\h^{(n)}\|\) over time, shown is the mean. Middle: Estimated \(\|\hat{\h}_i^{(n)}\|\) over time, shown is the mean. Dot-dashed lines are true values. Bottom: Median NPM, comparing optimal algorithm and proposed extended algorithm. Dashed vertical lines indicate rescaling events.}
+    \label{fig:simulations:NPMtimedyn}
+\end{figure}
+\section[]{Conclusions}
+\label{sec:conclusions}
+In this contribution, we propose an extension to a distributed adaptive BSI algorithm applied in sensor networks.
+Based on distributed averaging, only using the information provided by neighboring nodes in the sensor network, we compute estimates of norm values of channel estimates in order to enforce a norm constraint.
+By balancing the averaging with introducing new data into the recursion, we allow the algorithm to follow an adaptive updating scheme.
+The mixing factor, which balances new data with recursion data, is set adaptively dependent on instantaneous channel estimate norms.
+These introductions reduce inter-node transmissions for each time frame while still delivering steady-state estimation performance close to the optimal case where network-wide information is available at all nodes.
+The reduction that can be achieved goes as far as only needing a single iteration and, therefore, one additional inter-neighborhood information exchange per time frame.
+We show this in simulations with a white Gaussian input signal and random impulse responses drawn from the normal distribution.
+\begin{todo}
+    \begin{itemize}
+        \item Scale up simulation (for first setup) to \(M >> N_i\), like M = 50 and neighborhoods like in Toon's paper.
+        \item minor changes to plot labels, legend layouts
+        \item cite Bilgesu's paper somewhere :)
+    \end{itemize}
+\end{todo}
 
 \vfill\pagebreak
 

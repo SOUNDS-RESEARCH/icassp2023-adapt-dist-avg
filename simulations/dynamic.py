@@ -263,7 +263,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         color=line.get_color(),
         markerfacecolor="none",
     )
-    plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
+    plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5, loc="upper center")
     plt.grid()
     plt.ylim(-30, 0)
     plt.xlim(0, 15000)

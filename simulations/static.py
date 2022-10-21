@@ -211,7 +211,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # %%
     textwidth = 245
     conv_frames = 500
-    styles = ["-v", "-+", "-x", "-s", "--o", "k--"]
+    styles = ["-v", "-+", "-x", "-s", "--o", "k-."]
     fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.5))
     # plt.title(f"SNR={cfg.variables['SNR'][0]}dB")
     plt.xlabel(r"Mixing factor $\gamma_i$")
@@ -436,8 +436,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markerfacecolor="none",
     )
     # #########
-    plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5,
-        handlelength=1)
+    plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5, handlelength=1)
     plt.grid()
     plt.ylim(-40, 0)
     plt.xlim(0, 6000)

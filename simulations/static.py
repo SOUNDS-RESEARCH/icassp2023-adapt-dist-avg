@@ -210,7 +210,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     textwidth = 245
-    linewidth = 1.0
+    linewidth = 1.2
     conv_frames = 500
     styles = ["-v", "-+", "-x", "-s", "--o", "k-."]
     fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.5))

@@ -200,7 +200,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # %%
     # Plot
     textwidth = 245
-    linewidth = 1.0
+    linewidth = 1.2
     plt.close("all")
     mavg = 10
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]

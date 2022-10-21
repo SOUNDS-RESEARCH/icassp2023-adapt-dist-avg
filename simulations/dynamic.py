@@ -277,38 +277,38 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
 
     # %%
     # Plot
-    mavg = 200
-    styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.4))
-    # plt.title("Title")
-    # plt.xlabel("Time [frames]")
-    plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
-    plt.vlines(
-        [5000, 10000],
-        0.75,
-        1.25,
-        colors=["k", "k"],
-        linestyles=["dashed", "dashed"],
-        linewidth=[0.75, 0.75],
-    )
-    (line,) = plt.plot(
-        np.sqrt(data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy()),
-        "-",
-    )
-    # #########
-    # plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
-    plt.grid()
-    plt.ylim(0.75, 1.25)
-    plt.xlim(0, 15000)
-    # plt.tight_layout(pad=0.5)
-    ax = plt.gca()
-    ax.set_xticklabels([])
-    # ax.set_position(box.shrunk(1.0, relative_height))
-    ax.set_position(box)
-    plt.show()
+    # mavg = 200
+    # styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
+    # fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.4))
+    # # plt.title("Title")
+    # # plt.xlabel("Time [frames]")
+    # plt.ylabel(r"$\|\mathbf{h}\|$ [1]")
+    # plt.vlines(
+    #     [5000, 10000],
+    #     0.75,
+    #     1.25,
+    #     colors=["k", "k"],
+    #     linestyles=["dashed", "dashed"],
+    #     linewidth=[0.75, 0.75],
+    # )
+    # (line,) = plt.plot(
+    #     np.sqrt(data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy()),
+    #     "-",
+    # )
+    # # #########
+    # # plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5)
+    # plt.grid()
+    # plt.ylim(0.75, 1.25)
+    # plt.xlim(0, 15000)
+    # # plt.tight_layout(pad=0.5)
+    # ax = plt.gca()
+    # ax.set_xticklabels([])
+    # # ax.set_position(box.shrunk(1.0, relative_height))
+    # ax.set_position(box)
+    # plt.show()
 
     # %%
-    utils.savefig(fig, "icassp2023-dynamic-norm", format="pgf", pgf_font="serif")
+    # utils.savefig(fig, "icassp2023-dynamic-norm", format="pgf", pgf_font="serif")
 
     # %%
     # Plot
@@ -320,33 +320,33 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         )
     mavg = 200
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
-    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.4))
-    # plt.title("Title")
-    # plt.xlabel("Time [frames]")
-    plt.ylabel(r"$\|\hat{\mathbf{h}}_i\|$ [1]")
-    # for n in range(true_normed_norms.shape[0]):
-    # plt.vlines(
-    #     [5000, 10000],
-    #     0,
-    #     1,
-    #     colors=["k", "k"],
-    #     linestyles=["dashed", "dashed"],
-    #     linewidth=[0.75, 0.75],
-    # )
+    fig = plt.figure(figsize=utils.set_size(textwidth, 1.0, (1, 1), 0.5))
+    plt.ylabel(r"$\|\hat{\mathbf{h}}_i\|, \|\hat{\mathbf{h}}\|$")
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][2 * frames : 3 * frames].to_numpy()),
-        "-",
+        "-o",
         label=r"$\|\hat{\mathbf{h}}_1\|$",
+        markersize=4,
+        markevery=[2000, 7000, 12000],
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][3 * frames : 4 * frames].to_numpy()),
-        "-",
+        "-s",
         label=r"$\|\hat{\mathbf{h}}_2\|$",
+        markersize=4,
+        markevery=[2500, 7500, 12500],
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][4 * frames : 5 * frames].to_numpy()),
-        "-",
+        "-v",
         label=r"$\|\hat{\mathbf{h}}_3\|$",
+        markersize=4,
+        markevery=[3000, 8000, 13000],
+    )
+    (line,) = plt.plot(
+        np.sqrt(data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy()),
+        "-",
+        label=r"$\|\hat{\mathbf{h}}\|$",
     )
     plt.plot(
         [0, 5000, 5000, 10000, 10000, 15000],
@@ -356,10 +356,24 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=["true", "_true", "_true"],
         color="k",
     )
+    plt.plot(
+        [0, 15000],
+        np.repeat(1, 2, axis=0),
+        "-.",
+        linewidth=1.0,
+        color="k",
+    )
     # #########
-    plt.legend(ncol=1, prop={"size": 7}, columnspacing=0.5)
+    plt.legend(
+        ncol=5,
+        prop={"size": 7},
+        columnspacing=0.5,
+        handlelength=1,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.74),
+    )
     plt.grid()
-    plt.ylim(0, 1)
+    plt.ylim(0, 1.5)
     plt.xlim(0, 15000)
     # plt.tight_layout(pad=0.5)
     ax = plt.gca()

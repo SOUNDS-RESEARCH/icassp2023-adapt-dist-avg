@@ -11,11 +11,11 @@
 
 % Title.
 % ------
-\title{Distributed Adaptive Nrom Estimation For Blind System\\Identification in Wireless Sensor Networks}
+\title{Distributed Adaptive Norm Estimation For Blind System\\Identification in Wireless Sensor Networks}
 %
 % Single address.
 % ---------------
-\name{M. Blochberger\(^1\), R. Ali\(^1\), F. Elvander\(^2\), tbd, T. van Waterschoot\(^1\)\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the Research Foundation - Flanders (FWO) grant 12ZD622N as well as from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information. Source code available at \textcolor{red}{ADD URL}}}
+\name{M. Blochberger\(^1\), R. Ali\(^1\), F. Elvander\(^2\), M. Moonen\(^1\), tbd, T. van Waterschoot\(^1\)\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the Research Foundation - Flanders (FWO) grant 12ZD622N as well as from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information. Source code available at \textcolor{red}{ADD URL}}}
 \address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland\\tbd}
 
 \begin{document}
@@ -26,7 +26,7 @@
 \begin{abstract}
     Distributed signal-processing algorithms in (wireless) sensor networks often aim to decentralize processing tasks to reduce communication cost and computational complexity or avoid reliance on a single device (i.e., fusion center) for processing.
     In this contribution, we extend a distributed adaptive algorithm for blind system identification that relies on the estimation of a stacked network-wide consensus vector at each node, the computation of which requires either broadcasting or relaying of node-specific values (i.e., local vector norms) to all other nodes.
-    The extended algorithm employs a distributed-averaging-based estimation scheme to estimate the network-wide consensus norm value by only using the local vector norm provided by neighboring sensor nodes.
+    The extended algorithm employs a distributed-averaging-based scheme to estimate the network-wide consensus norm value by only using the local vector norm provided by neighboring sensor nodes.
     We introduce an adaptive mixing factor between instantaneous and recursive estimates of these norms for adaptivity in a time-varying system.
     Simulation results show that the extension provides estimation results close to the optimal fully-connected-network or broadcasting case while reducing inter-node transmission significantly.
 \end{abstract}

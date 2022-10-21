@@ -200,6 +200,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # %%
     # Plot
     textwidth = 245
+    linewidth = 1.0
     plt.close("all")
     mavg = 10
     styles = ["-+", "-x", "-<", "->", "-v", "-s", "-o", "k-"]
@@ -222,6 +223,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(20, 500),
         alpha=0.25,
+        linewidth=linewidth,
     )
     plt.plot(
         20
@@ -238,6 +240,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markevery=(20, 500),
         color=line.get_color(),
         markerfacecolor="none",
+        linewidth=linewidth,
     )
     (line,) = plt.plot(
         20 * np.log10(data.median().T["davgad", 0.0, 1][:frames]),
@@ -246,6 +249,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=(20, 500),
         alpha=0.25,
+        linewidth=linewidth,
     )
     plt.plot(
         20
@@ -262,6 +266,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markevery=(20, 500),
         color=line.get_color(),
         markerfacecolor="none",
+        linewidth=linewidth,
     )
     plt.legend(ncol=2, prop={"size": 7}, columnspacing=0.5, loc="upper center")
     plt.grid()
@@ -328,6 +333,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=r"$\|\hat{\mathbf{h}}_1\|$",
         markersize=4,
         markevery=[2000, 7000, 12000],
+        linewidth=linewidth,
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][3 * frames : 4 * frames].to_numpy()),
@@ -335,6 +341,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=r"$\|\hat{\mathbf{h}}_2\|$",
         markersize=4,
         markevery=[2500, 7500, 12500],
+        linewidth=linewidth,
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][4 * frames : 5 * frames].to_numpy()),
@@ -342,17 +349,20 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         label=r"$\|\hat{\mathbf{h}}_3\|$",
         markersize=4,
         markevery=[3000, 8000, 13000],
+        linewidth=linewidth,
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy()),
         "-",
         label=r"$\|\hat{\mathbf{h}}\|$",
+        markerfacecolor="none",
+        linewidth=linewidth,
     )
     plt.plot(
         [0, 5000, 5000, 10000, 10000, 15000],
         np.repeat(np.sqrt(true_normed_norms), 2, axis=0),
         "-.",
-        linewidth=1.0,
+        linewidth=0.8,
         label=["true", "_true", "_true"],
         color="k",
     )
@@ -360,7 +370,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         [0, 15000],
         np.repeat(1, 2, axis=0),
         "-.",
-        linewidth=1.0,
+        linewidth=0.8,
         color="k",
     )
     # #########

@@ -334,6 +334,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=[2000, 7000, 12000],
         linewidth=linewidth,
+        markerfacecolor="none",
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][3 * frames : 4 * frames].to_numpy()),
@@ -342,6 +343,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=[2500, 7500, 12500],
         linewidth=linewidth,
+        markerfacecolor="none",
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][4 * frames : 5 * frames].to_numpy()),
@@ -350,6 +352,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         markersize=4,
         markevery=[3000, 8000, 13000],
         linewidth=linewidth,
+        markerfacecolor="none",
     )
     (line,) = plt.plot(
         np.sqrt(data.mean().T["davgad", 0.0, 1][frames : 2 * frames].to_numpy()),

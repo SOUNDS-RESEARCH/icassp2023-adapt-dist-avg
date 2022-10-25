@@ -10186,7 +10186,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.094589in,y=1.433602in,left,base]{\color{textcolor}\rmfamily\fontsize{7.000000}{8.400000}\selectfont optimal}%
+\pgftext[x=1.094589in,y=1.433602in,left,base]{\color{textcolor}\rmfamily\fontsize{7.000000}{8.400000}\selectfont ideal}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetrectcap%

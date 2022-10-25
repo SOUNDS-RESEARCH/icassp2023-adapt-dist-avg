@@ -411,7 +411,7 @@ class Network:
         delta_norm_inst = np.abs(self.norm_inst - norm_inst)
         # gamma_ad = delta_norm_inst / self.norm_inst
 
-        gamma_ad = np.clip(delta_norm_inst / self.norm_inst, 0.0, 1)
+        gamma_ad = np.clip(delta_norm_inst / self.norm_inst, self.gamma, 1)
 
         self.gamma_ad.append(gamma_ad)
 

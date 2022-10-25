@@ -223,7 +223,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
         * np.log10(data.median().T.tail(conv_frames).mean()["opt", 1.0, 1])
         * np.ones_like(cfg.variable_values[2]["gamma"]),
         styles.pop(),
-        label=f"optimal",
+        label=f"ideal",
         markersize=4,
         markevery=(1, 2),
         markerfacecolor="none",
@@ -307,7 +307,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     (line,) = plt.plot(
         20 * np.log10(data.median().T["opt", 1.0, 1]),
         "k-",
-        label=f"_optimal",
+        label=f"_ideal",
         markersize=4,
         markevery=(1, 500),
         alpha=0.25,
@@ -321,7 +321,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
             )
         ),
         "-",
-        label=f"optimal",
+        label=f"ideal",
         markersize=4,
         markevery=(1, 500),
         color=line.get_color(),

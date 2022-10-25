@@ -219,7 +219,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     (line,) = plt.plot(
         20 * np.log10(data.median().T["opt", 0.0, 1][:frames]),
         "k-",
-        label=rf"_optimal",
+        label=rf"_ideal",
         markersize=4,
         markevery=(20, 500),
         alpha=0.25,
@@ -235,7 +235,7 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
             )
         ),
         "-",
-        label=rf"optimal",
+        label=rf"ideal",
         markersize=4,
         markevery=(20, 500),
         color=line.get_color(),

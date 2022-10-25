@@ -12,3 +12,7 @@ paper.pdf
 **/tmpdata/*
 **/*.pyc
 simulations/dynamic_tst.py
+simulations/.nfs0000000002c93fc500000043
+simulations/static_large1.py
+simulations/static_large_tst.py
+simulations/nohup.out

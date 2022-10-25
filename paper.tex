@@ -11,12 +11,12 @@
 
 % Title.
 % ------
-\title{Distributed averaging-based approach to BSI with ADMM}
+\title{Distributed Adaptive Norm Estimation For Blind System\\Identification in Wireless Sensor Networks}
 %
 % Single address.
 % ---------------
-\name{M. Blochberger\(^1\), R. Ali\(^1\), F. Elvander\(^2\), T. van Waterschoot\(^1\),tbd\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the Research Foundation - Flanders (FWO) grant 12ZD622N as well as from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information. Source code available at \textcolor{red}{ADD URL}}}
-\address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland\\tbd}
+\name{M. Blochberger\(^1\), F. Elvander\(^2\), R. Ali\(^1\), J. Østergaard\(^3\), J. Jensen\(^3\),  M. Moonen\(^1\), T. van Waterschoot\(^1\)\thanks{This research work was carried out at the ESAT Laboratory of KU Leuven, in the frame of the SOUNDS European Training Network. This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No.\,956369. This research received funding in part from the Research Foundation - Flanders (FWO) grant 12ZD622N as well as from the European Union's Horizon 2020 research and innovation program / ERC Consolidator Grant: SONORA (No.\,773268). This paper reflects only the authors' views and the Union is not liable for any use that may be made of the contained information. Source code available at \textcolor{red}{ADD URL}}}
+\address{\(^1\)KU Leuven, Dept. of Electrical Engineering (ESAT), STADIUS, 3001 Leuven, Belgium\\\(^2\)Aalto University, Dept. of Signal Processing and Acoustics, 02150 Espoo, Finland\\\(^3\)Aalborg University, Dept. of Electronic Systems, 9220 Aalborg, Denmark}
 
 \begin{document}
 \ninept
@@ -24,10 +24,10 @@
 \maketitle
 %
 \begin{abstract}
-    Distributed signal-processing algorithms in (wireless) sensor networks often aim to decentralize processing tasks to reduce communication cost and computational complexity or avoid reliance on a single device for processing.
-    In this contribution, we extend a distributed adaptive algorithm for blind system identification that relies on the knowledge of a stacked network-wide solution vector at each node, the computation of which requires either broadcasting or relaying of node-specific values to all other nodes.
-    The extended algorithm employs a distributed-averaging-based estimation scheme to estimate the network-wide norm value by only using the information provided by neighboring sensor nodes.
-    We introduce an adaptive mixing factor between instantaneous and recursion values for adaptivity in a time-varying system.
+    Distributed signal-processing algorithms in (wireless) sensor networks often aim to decentralize processing tasks to reduce communication cost and computational complexity or avoid reliance on a single device (i.e., fusion center) for processing.
+    In this contribution, we extend a distributed adaptive algorithm for blind system identification that relies on the estimation of a stacked network-wide consensus vector at each node, the computation of which requires either broadcasting or relaying of node-specific values (i.e., local vector norms) to all other nodes.
+    The extended algorithm employs a distributed-averaging-based scheme to estimate the network-wide consensus norm value by only using the local vector norm provided by neighboring sensor nodes.
+    We introduce an adaptive mixing factor between instantaneous and recursive estimates of these norms for adaptivity in a time-varying system.
     Simulation results show that the extension provides estimation results close to the optimal fully-connected-network or broadcasting case while reducing inter-node transmission significantly.
 \end{abstract}
 %
@@ -40,10 +40,10 @@ multi-channel signal processing, distributed signal processing, wireless sensor 
 
 Distributed algorithms have been an active area of research for quite some time, with numerous control, optimization, and signal processing applications.
 With the ever-growing number of smart multimedia devices in today's surroundings providing ubiquitous processing and communication capabilities, distributed audio and speech signal processing have also found their way into the spotlight.
-Algorithms for distributed signal estimation \cite{5483092}, noise control and echo cancellation \cite{9670697}, as well as beamforming \cite{6663655,6329934,MARKOVICHGOLAN20154} to name a few, have been proposed.
-Another important task in audio and communication applications, which however has not recived as much attention, is multi-channel system identification, i.e. estimating channel responses in time or frequency domain.
-Distributed single-input-multiple-output (SIMO) blind system identification (BSI) had contributions such as the adaptive cross-relation-based (CR) \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016}.
-Furthermore, we recently introduced an adaptive CR-based algorithm \cite{blochbergerDBSI} using the alternating direction method of multipliers (ADMM) \cite{boydDistributedOptimizationStatistical2011}.
+Algorithms for distributed signal estimation \cite{5483092}, noise control and echo cancellation \cite{9670697}, as well as beamforming \cite{6663655,6329934,MARKOVICHGOLAN20154,6309434} to name a few, have been proposed.
+Another important task in audio and communication applications, which however has not recived as much attention, is multi-channel system identification, i.e. estimating channel responses in the time or frequency domain.
+Distributed single-input-multiple-output (SIMO) blind system identification (BSI) has been addressed with adaptive cross-relation-based (CR) algorithms \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016}.
+In this context, we recently introduced an adaptive CR-based algorithm \cite{blochbergerDBSI} using the alternating direction method of multipliers (ADMM) \cite{boydDistributedOptimizationStatistical2011}.
 
 All of the aforementioned distributed BSI algorithms rely on shared information between neighboring sensor nodes within the network.
 However, the CR-based BSI task necessitates a non-triviality constraint on the full system to be identified (we refer the reader to, e.g., \cite{huangAdaptiveMultichannelLeast2002,huangClassFrequencydomainAdaptive2003}), which manifests itself as one or more variables that require network-wide shared information for their computation.
@@ -51,25 +51,22 @@ The algorithm in \cite{blochbergerDBSI} relies on node-wise values being relayed
 In contrast, to overcome the need for the network to be fully connected, \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016} use an average consensus \cite{xiaoFastLinearIterations2004} approach where a secondary recursion estimates the global variable for each signal frame.
 Both approaches introduce additional transmissions of variables between nodes, the number of which, depending on network and neighborhood size, can be substantial or even unfeasable.
 
-In this paper, we extend \cite{blochbergerDBSI} with a distributed averaging-based \cite{xiaoFastLinearIterations2004} estimation scheme for the global variable.
-This approach allows us to compute the global variable without the need of a fully connected network or broadcasting.
-We also introduce a mixing factor to include instantaneous values into the averaging recursion, which then allows us (i) to reduce the number of secondary iterations significantly (down to 1) and (ii) track time-varying systems.
+In this paper, we extend our algorithm in \cite{blochbergerDBSI} with a distributed averaging-based \cite{xiaoFastLinearIterations2004} estimation scheme for the global variable.
+This approach allows us, similarly to \cite{6334305,9914798}, to compute the global variable without the need of a fully connected network or broadcasting.
+We also introduce a mixing factor to include instantaneous values into the averaging recursion, which then allows us (i) to reduce the number of secondary iterations significantly (from 50 in existing approaches, down to 1) and (ii) track time-varying systems.
 Simulation results demonstrate how the extension leads to BSI performance close to an optimal case where all information is available without the need of a fully connected network or a large number of estimation iterations.
 
 \section{DISTRIBUTED ADAPTIVE BSI IN SENSOR NETWORKS WITH ONLINE-ADMM}
 \label{sec:dbsi}
-In this section, we briefly outline the adaptive SIMO BSI algorithm proposed in [8], setting the scene for the distributed averaging scheme proposed herein.
-% In this section, we will introduce certain parts of an adaptive SIMO BSI algorithm based on Online-ADMM \cite{blochbergerDBSI}, which are necessary for the reader to understand its extension of it.
+In this section, we briefly outline the adaptive SIMO BSI algorithm proposed in \cite{blochbergerDBSI}, setting the scene for the distributed averaging scheme proposed herein.
 We refer the reader to the publication cited above for the full derivation of the algorithm.
 
 \subsection[]{Sensor network}
-We assume a set \(\Mset \triangleq \{1,\ldots,M\}\) sensor nodes indices and a set of edge tuples \(\mathcal{E}\), which connect the nodes forming a sensor network.
+We assume a set of nodes with one sensor each, that is, each node provides one signal.
+Let this set of nodes be \(\Mset \triangleq \{1,\ldots,M\}\) and \(\mathcal{E}\) be a set of edge tuples, which connect the nodes forming a sensor network.
 Each edge is an unordered pair of node indices \(\{i,j\} \in \mathcal{E}\), which represents the communication link between them.
-We allow \(\{i,i\} \in \mathcal{E}\), in order to simplify notation later, however, this does not represent a link but rather indicates the obvious fact that node \(i\) has information of itself.
-Furthermore, let \(\Nset_i = \{j|\{i,j\} \in \mathcal{E}\}\) denote the neighborhood of node \(i\),
-% From this follows the neighborhood of a node \(i\), i.e., the other nodes it is directly connected to, defined as \(\Nset_i = \{j|\{i,j\} \in \mathcal{E}\}\).
-% It is to note, that we define the set with \(i \in \Nset_i\) for ease of notation later.
-% This does however not represent an actual inter-node link.
+We allow \(\{i,i\} \in \mathcal{E}\), in order to simplify notation later, however, this does not represent a link but rather indicates the obvious fact that node \(i\) has information about itself.
+Furthermore, let \(\Nset_i = \{j|\{i,j\} \in \mathcal{E}\}\) denote the neighborhood of node \(i\).
 We can define the symmetric adjacency matrix \(\mtxb{C}\) with elements \(C_{ij} = 1\) if \(\{i,j\} \in \mathcal{E}\) and 0 otherwise.
 It may be noted that in \cite{blochbergerDBSI}, the pairs \(\{i,j\} \in \mathcal{E}\) are ordered, which yields a directed graph and leads to two sets of neighborhoods (``transmit'' and ``receive'') and therefore a non-symmetric adjacency matrix.
 For the sake of brevity, we limit the explanations in this paper to the undirected case.
@@ -82,22 +79,25 @@ We consider a SIMO system with
     \mtxb{s}(n) &= [s(n),\,\ldots,\,s(n-2L+2)]^{\T},\\
     \x_i(n) &= [x_i(n),\,\ldots,\,x_i(n-L+1)]^{\T}, \quad i \in \Mset,
 \end{align}
-the input signal frame and \(M\) output signal frames, respectively.
+the \(2L \times 1\) input signal frame and \(M\) \(L \times 1\)  output signal frames, respectively.
 Each output \(\x_i(n)\) is the convolution of \(\mtxb{s}(n)\) with the respective channel impulse response \(\h_i\) and an additive noise term \(\mtxb{v}_i(n)\), assumed to be zero-mean and uncorrelated with \(\mtxb{s}(n)\).
-The signal model is \(\x_i(n) = \mtxb{H}_i \mtxb{s}(n) + \mtxb{v}_i(n),\)
+The signal model is
+\begin{equation}
+    \x_i(n) = \mtxb{H}_i \mtxb{s}(n) + \mtxb{v}_i(n),
+\end{equation}
 with \(\mtxb{H}_i\), the \(L \times (2L-1)\) linear convolution matrix of the \(i\)th channel using the elements of \(\h_i\) of length \(L\).
 For the purpose of this paper, the length \(L\) of the impulse responses is assumed to be known.
 
 \subsection[]{Distributed BSI with Online-ADMM}
-In BSI, the coss-relation problem formulation only uses output signals \(\x_i(n)\), exploiting relative information between them, to identify the system, i.e., the acoustic or communication channels \(\h = [\h_1^\T,\,...,\,\h_M^\T]^\T\).
+In BSI, the cross-relation problem formulation only uses output signals \(\x_i(n)\), exploiting relative information between them, to identify the system, i.e., the acoustic or communication channels \(\h = [\h_1^\T,\,...,\,\h_M^\T]^\T\).
 The solution to this problem is found by the minimization problem \cite{langtongBlindIdentificationEqualization1994,huangAdaptiveMultichannelLeast2002,huangClassFrequencydomainAdaptive2003,blochbergerDBSI}:
 \begin{equation}
     \begin{aligned}
         \hat{\h} = \arg \min_{\h} \quad &\h^\herm \R \h \\
-        \text{s.t. } \quad &\|\h\| = 1.
+        \text{s.t. } \quad &\|\h\| = 1,
     \end{aligned}\label{eq:frequency_domain:min_prob}
 \end{equation}
-where \(\hat{\h} = [\hat{\h}_1^\T,\,...,\,\hat{\h}_M^\T]^\T\) is the vector of estimated channel responses.
+where \(\hat{\h} = [\hat{\h}_1^\T,\,...,\,\hat{\h}_M^\T]^\T\) is the vector of estimated channel responses and \(\R\) is the so-called cross-relation (CR) matrix.
 In \cite{blochbergerDBSI}, this problem is solved by a distributed adaptive algorithm that is based on separating the problem \eqref{eq:frequency_domain:min_prob} into node-wise subproblems,
 \begin{equation}
     \begin{aligned}
@@ -106,57 +106,45 @@ In \cite{blochbergerDBSI}, this problem is solved by a distributed adaptive algo
         &\|\h\| = 1.
     \end{aligned}\label{eq:general_consensus_admm:min_prob}
 \end{equation}
-Here, each subproblem \(\w_i^\herm \aRhof_i \w_i\), with the node-local estimates \(\w_i\) and data matrix \(\aRhof_i\).
-Both are analogous to \(\h_i\) and \(\R\) in \eqref{eq:frequency_domain:min_prob}, however, only using a subset channels, provided by neighboring nodes \(\Nset_i \subset \Mset\).
-The first constraint enforces a consensus of local estimates, and \(\mathcal{G}(i,j)\) is a parameter mapping function equating local estimates of nodes connected by edge \((i,j) \in \mathcal{E}\).
-General-form consensus alternating direction method of multipliers (ADMM) \cite{boydDistributedOptimizationStatistical2011} is applied in an adaptive updating scheme (Online-ADMM) \cite{wangOnlineAlternatingDirection2013,hosseiniOnlineDistributedADMM2014}.
+Here, each subproblem is represented by a cost function \(\w_i^\herm \aRhof_i \w_i\), with the node-local channel estimates \(\w_i\) and CR matrix \(\aRhof_i\).
+Both are analogous to \(\h_i\) and \(\R\) in \eqref{eq:frequency_domain:min_prob}, however, only using a subset of channels, corresponding to \(\Nset_i \subset \Mset\).
+The first constraint enforces a consensus of local estimates, and \(\mathcal{G}(i,j)\) is a map equating local estimates of nodes connected by edge \((i,j) \in \mathcal{E}\).
+The general-form consensus alternating direction method of multipliers (ADMM) \cite{boydDistributedOptimizationStatistical2011} is applied in an adaptive updating scheme (Online-ADMM) \cite{wangOnlineAlternatingDirection2013,hosseiniOnlineDistributedADMM2014}.
 ADMM leads to update steps for local, consensus, and dual variables.
 We refer the reader to \cite{blochbergerDBSI} for details.
 The algorithm's consensus variable is the system's estimate, \(\hat{\h}\).
 Each node \(i\) computes the respective subvector \(\hat{\h}_i\) locally, which is the computation step of interest for this extension.
-% Separating the cost function and applying general-form consensus ADMM as an adaptive algorithm leads to the update steps
-% \begin{align}
-%     \w_i^{(n+1)} &= \underset{\w_i}{\operatorname{argmin}} \, \mathcal{L}_{\rho} (\w,\h^{(n)},\uu^{(n)})\label{eq:general_consensus_admm:local}\\
-%     \h^{(n+1)} &= \underset{\h, \|\h\| = 1}{\operatorname{argmin}}\, \mathcal{L}_{\rho} (\w^{(n+1)},\h,\uu^{(n)})\label{eq:general_consensus_admm:global}\\
-%     \uu_i^{(n+1)} &= \uu_i^{(n)} + \rho \left( \w_i^{(n+1)} - \tilde{\h}_i^{(n+1)} \right),\label{eq:general_consensus_admm:dual}
-% \end{align}
-% where \(\w_i\) represents channels estimates of lower dimensional subproblems, solved locally by node \(i\), \(\h = [\hat{\h}_1^\T,\,...,\,\hat{\h}_M^\T]^\T\) the consensus variable (estimate of the system), and \(\uu_i\) are the dual variables.
-% \begin{todo}
-%     Is this enough? I fear i have to use a full page introducing all the local, consensus, dual variables, parameter mapping and the lagrangian etc. only to get to \eqref{eq:online_admm:consensus_update} and say that the denominator is what we are looking at...
-% \end{todo}
 It is defined as
 \begin{equation}
-    \hat{\h_i}^{(n+1)} = \frac{\bar{\h}_i^{(n+1)}}{\sqrt{\sum_{j \in \Mset} \|\bar{\h}_j^{(n+1)}\|^2}}\label{eq:online_admm:consensus_update}
+    \hat{\h_i}^{(n)} = \frac{\bar{\h}_i^{(n)}}{\sqrt{\sum_{j \in \Mset} \|\bar{\h}_j^{(n)}\|^2}}\label{eq:online_admm:consensus_update}
 \end{equation}
-for each node \(i \in \Mset\) with the local unnormalized consensus \(\bar{\h}_i^{(n+1)}\), a combination of neigborhood averages of local estimates and dual variables, see \cite{blochbergerDBSI}.
-The computation of the denominator of \eqref{eq:online_admm:consensus_update} requires  \(\|\bar{\h}_j^{(n+1)}\|\) from all nodes \(j \in \Mset\), which however, is not possible without a fully-connected network or broadcasting.
+for each node \(i \in \Mset\) with the local unnormalized consensus \(\bar{\h}_i^{(n)}\), a combination of neigborhood averages of local estimates and dual variables, see \cite{blochbergerDBSI}.
+The computation of the denominator of \eqref{eq:online_admm:consensus_update} requires  \(\|\bar{\h}_j^{(n)}\|\) from all nodes \(j \in \Mset\), which however, is not possible without a fully-connected network or broadcasting.
 In \cite{blochbergerDBSI}, we assume that partial squared norms are relayed throughout the network until all nodes have the information necessary.
 
 In \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016},
 a global value is estimated by a related iterative averaging approach, combining values within neighborhoods until convergence to a network-wide average.
 
-Subsequently, we introduce an extension to the algorithm described in \cite{blochbergerDBSI} using a fastest distributed linear averaging (FDLA) approach \cite{xiaoFastLinearIterations2004} to avoid the need of network wide data transmission.
+Subsequently, we introduce an extension to the algorithm described in \cite{blochbergerDBSI} using a fastest distributed linear averaging (FDLA) approach \cite{xiaoFastLinearIterations2004} to avoid the need of network-wide data transmission.
 The approach described in \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016} employs a related iterative averaging scheme within a distributed gradient descent algorithm for BSI in order to estimate a global variable, however, necessitating many iterations per frame.
-So we further introduce an adaptive mixing factor to include instantaneous values in the recursion to separate avaraging iterations onto time frames of the adaptive algorithm.
+To alleviate this, we further introduce an adaptive mixing factor to include instantaneous values in the recursion to separate avaraging iterations onto time frames of the adaptive algorithm.
 
 \section{Adaptive norm estimation}
 \label{sec:adaptivenormest}
 
 \subsection[]{Distributed averaging}
-% The computation of the denominator of \eqref{eq:online_admm:consensus_update} requires knowledge of all \(\|\bar{\h}_i\|^2\) at each node \(i \in \Mset\).
-% To avoid the large number of transmissions, which would be necessary to facilitate this, we will approximate the squared norm \(\sum_{i \in \Mset} \|\bar{\h}_i\|^2\) at each node \(i\) only using information shared within its neighborhood \(\Nset_i\).
-First, assuming we have some unnormalized consensus variables \(\bar{\h}_i\) for \(i \in \Mset\), we look to distributively compute a sum of their squared norms, \(\sum_{i \in \Mset} \|\bar{\h}_i\|^2\), for \eqref{eq:online_admm:consensus_update} at each node \(i\).
+First, assuming we have some unnormalized consensus variables \(\bar{\h}_i\) for \(i \in \Mset\), we look to distributively compute a sum of their squared norms, \(\sum_{j \in \Mset} \|\bar{\h}_j\|^2\), for \eqref{eq:online_admm:consensus_update} at each node \(i\).
 
 Distributed linear combinations allow us to compute an average in a distributed manner, which makes computing the desired sum straightforward.
-They have the form of
+They generally have the form of
 \begin{equation}
     \phi_i({k+1}) = \sum_{j \in \Nset_i} W_{ij} \phi_j({k}),\quad i\in \Mset,\label{eq:adaptivenormest:distlincomb}
 \end{equation}
 with iteration index \(k=0,...,K\).
 This can be written in vector form \(\bm{\phi}({k+1}) = \W \bm{\phi}({k})\) with \(\bm{\phi}(k) = \begin{bmatrix} \phi_1(k) & \ldots & \phi_M(k) \end{bmatrix}^\T\).
 We want to find the matrix \(\mtxb{W}\), which will ensure that for any initial value \(\bm{\phi}({0})\), each element of \(\bm{\phi}({k})\) converges to the average of the elements of \(\bm{\phi}({0})\) when \(k \to \infty\).
-In this application, the elements of \(\bm{\phi}(0)\) are the initial node-wise squared norm values \(\|\bar{\h}_i\|^2\), of which we want to compute the sum of.
-This leads to \(\lim_{k \to \infty} M \phi_i(k) = \sum_{i \in \Mset} \|\bar{\h}_i\|^2\) for all \(i \in \Mset\).
+In this application, the elements of \(\bm{\phi}(0)\) are the initial node-wise squared norm values \(\|\bar{\h}_i\|^2\), which we want to compute the sum of.
+This leads to \(\lim_{k \to \infty} M \phi_i(k) = \sum_{j \in \Mset} \|\bar{\h}_j\|^2\) for all \(i \in \Mset\), \cite{xiaoFastLinearIterations2004}.
 Computing the desired \(\mtxb{W}\) is done by solving the fastest distributed linear averaging (FDLA) problem, introduced in \cite{xiaoFastLinearIterations2004}, in the form of
 \begin{equation}
     \begin{aligned}
@@ -166,24 +154,28 @@ Computing the desired \(\mtxb{W}\) is done by solving the fastest distributed li
 \end{equation}
 Here, the set \(\mathcal{C} = \{\W \in \mathbb{R}^{M \times M} \vert W_{ij} = 0 \text{ if } \{i,j\} \notin \mathcal{E}\}\) describes all matrices with the same sparsity pattern as the adjacency matrix \(\mtxb{C}\).
 Now, the \(i\)-th row of \(\W\) contains the neigborhood weights for node \(i\) as non-zero entries.
-It is to note that this has to be done only once for any fixed network \(\Mset\) and \(\mathcal{E}\).
-% \begin{todo}
-%     This section reads awkward
-% \end{todo}
-% In usual applications of the iteration \eqref{eq:adaptivenormest:distlincomb}, it is applied \(K \in \mathbb{N}\) times until convergence of the averages is reached.
+It is to note that this has to be done only once for any fixed-topology network \(\Mset\) and \(\mathcal{E}\).
 \subsection[]{Proposed adaptive estimation}
-Given that the BSI algorithm being extended \cite{blochbergerDBSI} is adaptive and the unnormalized consensus estimates \(\bar{\h}_i^{(n)}\) are therefore time-varying, computing a distributed sum of their norms has to be adapted.
+\begin{figure}[t]
+    \centering
+    \input{simulations/plots/icassp2023-static-time/icassp2023-static-time.pgf}
+    \vspace*{-0.6cm}
+    \caption[]{Median NPM of 30 Monte-Carlo runs over time for optimal case where all node information is available (fully connected network/broadcasting), fixed values of \(\gamma_i\) with \(K \in \{1,10\}\), adaptive \(\gamma_i\) with \(K=1\). A moving average filter was applied to result curves for better readability (compare transparent and opaque lines). Hatched area indicates frames used in computations for \autoref{fig:simulations:avgNPMgamma}.}
+    \label{fig:simulations:NPMtime}
+\end{figure}
+Given that the BSI algorithm being extended \cite{blochbergerDBSI} is adaptive and the unnormalized consensus estimates \(\bar{\h}_i^{(n)}\) are therefore time-varying, computing a distributed sum of their norms has to be performed adaptively.
 The baseline approach is to compute \(K\) iterations \eqref{eq:adaptivenormest:distlincomb} per frame index \(n\).
-For this iterative approach to converge, \(K\) has to be sufficiently large (e.g., \(K=50\) in \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016}).
-This is suboptimal, as each iteration requires that a node \(i\) shares the averaging variable \(\phi_i(k)\) with its neighborhood \(\Nset_i\).
-Therefore, we first propose to split iterations over time frames, i.e., each \(n\), we set the initial values \(\phi_i^{(n)}(0) = \phi_i^{(n-1)}(K)\), that is, the result of the last iteration of the previous frame.
-This means \(K\) can be chosen small, given that after sufficient frames \(n\), convergence will be reached.
-This rudimentary first modification, however, does not factor in the adaptive approach to channel identification.
-That is, when letting \(\phi_i^{(n)}(0) = \|\bar{\h}_i^{(0)}\|\), with \(\bar{\h}_i^{(0)}\) being estimates at the inital frame \(n=0\), the approach converges to the sum of these inital - bad - estimates.
-Therefore we factor in the instantaneous approximation, the weighted in-neighborhood sum \(\eta_i^{(n)} = \sum_{j \in \Nset_i} W_{ij} \|\bar{\h}_i^{(n)}\|^2\).
-This leads to
+For the baseline iterative approach to converge, \(K\) has to be sufficiently large (e.g., \(K=50\) in \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016}).
+This is suboptimal in terms of communication cost, as each iteration requires that a node \(i\) shares the averaging variable \(\phi_i(k)\) with its neighborhood \(\Nset_i\).
+Therefore, we first propose to split iterations over time frames.
+For each \(n\), we could set the initial values \(\phi_i^{(n)}(0)\) to the result of the \(K\)-th iteration \(\phi_i^{(n-1)}(K)\) of the previous frame \(n-1\).
+With sufficiently large \(n\), convergence will be reached even when \(K\) is chosen small.
+However, this rudimentary modification does not factor in the adaptive approach to channel identification.
+That is, when letting \(\phi_i^{(0)}(0) = \|\bar{\h}_i^{(0)}\|\), with \(\bar{\h}_i^{(0)}\) being estimated at the inital frame \(n=0\), it converges to the sum of these initial - poor - estimates.
+Therefore, we factor in the instantaneous approximation, the weighted in-neighborhood sum \(\eta_i^{(n)} = \sum_{j \in \Nset_i} W_{ij} \|\bar{\h}_i^{(n)}\|^2\), which will introduce new information gained by more accurate estimates of \(\bar{\h}_i^{(n)}\).
+We add this information by linearly combining it with the \(K\)-th iterate of \(\phi_i^{(n)}(k)\) and set it as the initial value for the next frame:
 \begin{equation}
-    \hat{\phi}_i^{(n+1)} = \gamma_i \eta_i^{(n)} + (1-\gamma_i) \phi_i^{(n)}(K),
+    \phi_i^{(n)}(0) = \gamma_i \eta_i^{(n)} + (1-\gamma_i) \phi_i^{(n-1)}(K),
 \end{equation}
 where \(\gamma_i\) is a mixing factor.
 We exploit the instantaneous information \(\eta_i^{(n)}\) to find values for the mixing factor.
@@ -194,51 +186,30 @@ We heuristically set \(\gamma_i^{(n)}\) proportional to the absolute difference 
     \gamma_i^{(n)} = \min \left\lbrace \frac{| \eta_i^{(n)} - \eta_i^{(n-1)} |}{\eta_i^{(n-1)}},\,1\right\rbrace.\label{eq:adaptivenormest:adaptivegamma}
 \end{equation}
 The initial value for \(\eta_i^{(n-1)}\) for \(n=0\) can be set to an arbitrary real number, in our case 1.
-% The combination of instantaneous values and distributed averaging estimate should lead to lower steady-state error when \(\gamma_i\) is chosen right, while with adaptive \(\gamma_i\), convergence speed should increase as well.
-Refer to \autoref{alg:davg_norm_est} for the extended algorithm introduced in this section.
-
-% \section{Transmission cost}
-
+Refer to \autoref{alg:davg_norm_est} for the order of computations of the extended algorithm we introduced here.
 
 \section{Evaluation}
 \label{sec:simulations}
+\begin{figure}[t]
+    \centering
+    \input{simulations/plots/icassp2023-static/icassp2023-static.pgf}
+    \vspace*{-0.6cm}
+    \caption[]{Mean of 500 post-convergence frames of median NPM of 30 Monte-Carlo runs for fixed \(\gamma_i\) on the interval \([0.0, 0.04]\) and \(K \in \{1,2,10\}\). Results for optimal algorithm, and adaptive \(\gamma_i\) included for comparison.}
+    \label{fig:simulations:avgNPMgamma}
+\end{figure}
 \subsection[]{Communication cost}
 \label{sec:transcost}
-% \renewcommand{\arraystretch}{1.2}
-% \begin{table}[t]
-%     \centering
-%     \begin{tabular}{ |l|l| } 
-%         \hline
-%         & Cost \\
-%         \hline\hline
-%         (1) Fully connected & \(\mathcal{O}(M)\) \\
-%         \hline
-%         (2) Broadcast & \(\mathcal{O}(M)\) \\ 
-%         \hline
-%         (2) Neighborhood & \(\mathcal{O}(\bar{N}_i K)\) \\ 
-%         \hline
-%     \end{tabular}
-%     \caption[]{Comparison of communication cost.}
-%     \label{tab:transcost:table}
-% \end{table}
-% \renewcommand{\arraystretch}{1.0}
 To describe the communication cost within the network, we count the number of variables transmitted per time frame \(n\).
 The most useful measure in the case of this work is to analyze the cost per node.
-% For this we define an average neighborhood size \(\bar{N}_i = \frac{1}{M} \sum_{i \in \Mset} N_i\) where \(N_i = | \Nset_i |\) is the cardinality/size of the neigborhood set for node \(i\).
 We compare the following communication schemes within the context of the algorithm \cite{blochbergerDBSI} this paper proposes the extension to:
 \begin{itemize}
     \itemsep-0.2em
     \item[(1)] A fully-connected network, where node \(i\) communicates \(\|\bar{\h}_i\|^2\) to all other nodes \(\{j \in \Nset_i = \Mset\}\) directly, i.e., the neighborhood is the full network.
-    % \item[(2)] The node \(i\) broadcasts \(\|\bar{\h}_i\|\), i.e., it transmits to all other nodes \(\{j \in \Mset \setminus i\}\) without direct links.
     \item[(2)] The node \(i\) communicates \(\|\bar{\h}_i\|^2\) only to neighboring nodes \(\{j \in \Nset_i \subset \Mset\}\) and applies \(K\) distributed averaging iterations.
 \end{itemize}
-\autoref{tab:transcost:table} compares the number of transmit and receive operations a node \(i\) has to apply in order to compute \eqref{eq:online_admm:consensus_update}.
-Further, it shows the complexity of the problem a node \(i\) has to solve according to \cite{blochbergerDBSI} given the two types of network topology, assuming it uses all information it receives.
-The advantage of the fully distributed algorithm becomes clear when \(M>>N_i\), as the additional communication and local complexity depends on neighborhood size \(N_i\) and not on network size \(M\).
-% In this comparison, we only consider communication necessary for the computation of \eqref{eq:online_admm:consensus_update} as the rest of the algorithm is the same for our options.
-% For (1), the cost per node increases linearly with network size \(M\), whereas for communication scheme (2), the cost is linearly dependent on neighborhood size \(N_i\) and iteration count \(K\) only and therefore independent of network size.
-% The problem to be solved at each node \(i \in \Mset\) has complexity \(\mathcal{O}(M^2 L^2)\) for (1), with channel response length \(L\) (which means there is no reduction compared to a centralized approach).
-% For (2), local complexity is \(\mathcal{O}(N_i^2 L^2)\), where \(N_i\) is the neighborhood size.
+\autoref{tab:transcost:table} compares the number of transmit and receive operations node \(i\) has to apply in order to compute \eqref{eq:online_admm:consensus_update}.
+Further, it shows the complexity of the problem node \(i\) has to solve according to \cite{blochbergerDBSI} given the two types of network topology, assuming it uses all information it receives.
+The advantage of the fully distributed algorithm becomes clear when \(M \gg N_i\), as the additional communication and local complexity depends on neighborhood size \(N_i\) and not on network size \(M\).
 \vspace*{-0.6em}
 \renewcommand{\arraystretch}{1.2}
 \begin{table}[h]
@@ -249,68 +220,25 @@ The advantage of the fully distributed algorithm becomes clear when \(M>>N_i\), 
         \hline\hline
         (1) Fully con. & \(M-1\) & \(M-1\) & \(\mathcal{O}(M^2 L^2)\) \\
         \hline
-        % (2) Broadcast & \(1\) & \(M-1\) & \(\mathcal{O}(N_i^2 L^2)\)  \\ 
-        % \hline
         (2) Neighborh. & \(N_i K\) & \(N_i K\) & \(\mathcal{O}(N_i^2 L^2)\)\\ 
         \hline
     \end{tabular}
-    % \caption[]{Comparison of communication cost (transmission operations \& receive operations) and local problem complexity for a node \(i\) within the network. \(M\) is the number of nodes within the network, \(N_i\) is the number neighboring nodes, \(L\) is the lenght of channel responses, \(K\) is the number of distributed averaging iterations.}
     \caption[]{Communication cost per node and frame \(n\) for computation of \eqref{eq:online_admm:consensus_update}.}
     \label{tab:transcost:table}
 \end{table}
 \renewcommand{\arraystretch}{1.0}
-% To describe the communication cost within the network, we adopt the Big-\(\mathcal{O}\) notation, similar to the complexity analysis of algorithms.
-% We consider the communication of a variable from one node to another as \(\mathcal{O}(1)\).
-% The most useful measure in the case of this work is to analyze the cost per node.
-% For this we define an average neighborhood size \(\bar{N}_i = \frac{1}{M} \sum_{i \in \Mset} N_i\) where \(N_i = | \Nset_i |\) is the cardinality/size of the neigborhood set for node \(i\).
-% We compare the following communication schemes:
-% \begin{itemize}
-%     \itemsep-0.2em
-%     \item[(1)] A fully connected network, i.e., all nodes are linked with all other nodes by direct links, \(\Nset_i = \Mset\).
-%     \item[(2)] The nodes employ broadcasting, i.e., the nodes transmit to all other nodes without direct links.
-%     \item[(2)] The nodes only communicate with neighboring nodes, \(\Nset_i \subset \Mset\).
-% \end{itemize}
-% For (1) and (2), the cost per node increases linearly with network size \(M\): \(\mathcal{O}(M)\).
-% Using communication scheme (2), as in \cite{yuDistributedBlindSystem2014,liuDistributedBlindIdentification2016} and proposed as an extension to \cite{blochbergerDBSI} in this paper, cost is linearly dependent on neighborhood size \(N_i\) and iteration count \(K\) only: \(\mathcal{O}(\bar{N}_i K)\).
-% \begin{todo}
-%     Unsure, about this. Filips feedback: "Don't you want the complexity for the whole system here so that you can compare things? That us write the complexity for the fully connected system as well as the distributed systems, parametrized in such away that the reader can compare the two. Here, the reader sees \(M\) and \(\bar{N}_i,K\) and has no idea of how they relate to each other."\\
-%     But this shows how the communication cost as defined here goes from \(\mathcal{O}(M)\) to \(\mathcal{O}(\bar{N}_i K)\).\\
-%     Other option: not just communication cost: fully connected \(\mathcal{O}(M^2 L^2)\), broadcast \(\)
-% \end{todo}
-% Refer to \autoref{tab:transcost:table} for the collected orders of communication cost.
-% \begin{figure}[t]
-%     \centering
-%     \input{simulations/plots/transcostnode/transcostnode.pgf}
-%     % \vspace*{-0.8cm}
-%     \caption[]{A graphical representation of the order of transmission cost of a single node within the network dependent on network size. One can observe that for the neigborhood-only communication scheme, cost stays constant. (This plot might be unnecessary and space consuming)}
-%     \label{fig:transcost:bigo}
-% \end{figure}
 
 \subsection[]{Simulations}
-\begin{figure}[t]
-    \centering
-    \input{simulations/plots/icassp2023-static-time/icassp2023-static-time.pgf}
-    \vspace*{-0.6cm}
-    \caption[]{Median NPM of 30 Monte-Carlo runs over time for optimal case where all node information is available (fully connected network/broadcasting), fixed values of \(\gamma_i\) with \(K \in \{1,10\}\), adaptive \(\gamma_i\) with \(K=1\). A moving average filter was applied to result curves for better readability (compare transparent and opaque lines). Hatched area indicates frames used in computations for \autoref{fig:simulations:avgNPMgamma}.}
-    \label{fig:simulations:NPMtime}
-\end{figure}
-\begin{figure}[t]
-    \centering
-    \input{simulations/plots/icassp2023-static/icassp2023-static.pgf}
-    \vspace*{-0.6cm}
-    \caption[]{Mean of 500 post-convergence frames of median NPM of 30 Monte-Carlo runs for fixed \(\gamma_i\) on the interval \([0.0, 0.04]\) and \(K \in \{1,2,10\}\). Results for optimal algorithm, and adaptive \(\gamma_i\) included for comparison. Hatched area in \autoref{fig:simulations:NPMtime} indicates frames used for computation of mean NPM.}
-    \label{fig:simulations:avgNPMgamma}
-\end{figure}
 To evaluate the effectiveness of the proposed extension, simulations were run, where we define the error measure as the normalized projection misalignment
 \begin{equation}
     \begin{aligned}
-        \text{NPM}(n) &= 20\,\log_{10} \frac{\left\| \mtxb{e} \right\|}{\left\|\hat{\h}(n)\right\|},\\
-        \text{with}\quad \mtxb{e} &= \hat{\h}(n) - \frac{\hat{\h}^\T (n) \h}{\h^\T \h}\hat{\h}(n),
+        \text{NPM}(n) &= 20\,\log_{10} \frac{\left\| \mtxb{e} \right\|}{\left\|\hat{\h}^{(n)}\right\|},\\
+        \text{with}\quad \mtxb{e} &= \hat{\h}^{(n)} - \frac{\h^\T \hat{\h}^{(n)}}{\h^\T \h}\hat{\h}^{(n)},
     \end{aligned}
 \end{equation}
-commonly used in BSI to compare estimated \(\hat{\h}(n)\) and true \(\h\).
+commonly used in BSI to compare the estimated \(\hat{\h}^{(n)}\) and true \(\h\).
 
-The first simulation setup is a network with \(M=5\) nodes arranged in a ring topology, each node having \(|N_i|=2\) neighbors.
+The first simulation setup is a network with \(M=5\) nodes arranged in a ring topology, each node having \(N_i=3\) neighbors (including node \(i\)).
 The input signal is zero-mean white Gaussian noise (WGN), the impulse responses of length \(L=16\) are drawn from a normal distribution, and at each channel, independent WGN is added with \(\text{SNR}=10\,\text{dB}\).
 The norms of the impulse responses are scaled to random values drawn from the uniform distribution \(\mathcal{U}_{[0.5,2.0]}\).
 A comparison is made between the following cases:
@@ -328,35 +256,25 @@ A comparison is made between the following cases:
     {
         \For(){\(i \in \Mset\)}
         {
-            % \(\cdots\)\\
-            % \(\w_i^{(n)} \gets \operatorname{argmin}_{\w_i}\, \mathcal{L}_{\rho} (\w,\h^{(n)},\uu^{(n)})\)\;
-            % Compute \(\bar{\h}_i^{(n)}\)\;
-            % \(\cdots\)\\
             \emph{The steps before are as introduced in }\cite{blochbergerDBSI}\\
             \dotfill\\
-            % Transmit \(\bar{\h}_i^{(n)}\) to nodes  \(j \in \Nset_i\)\;
             \(\eta_i^{(n)} \gets \sum_{j \in \Nset_i} W_{ij} \|\bar{\h}_i^{(n)}\|^2\)\;
             \(\gamma_i^{(n)} \gets \min \left\lbrace \frac{| \eta_i^{(n)} - \eta_i^{(n-1)} |}{\eta_i^{(n-1)}},\,1\right\rbrace\)\;
             \eIf(){\(n = 0\)}
             {
-                \(\phi_i^{(n)}(1) \gets \|\bar{\h}_i^{(n)}\|^2\)\;
+                \(\phi_i^{(0)}(0) \gets \|\bar{\h}_i^{(0)}\|^2\)\;
             }
             {
-                \(\phi_i^{(n)}(1) \gets \hat{\phi}_i^{(n-1)}(K)\)\;
+                \(\phi_i^{(n)}(0) \gets \gamma_i^{(n)} \eta_i^{(n)} + (1-\gamma_i^{(n)}) \phi_i^{(n-1)}(K)\)\;
             }
             \For(){\(k=0,\dots,K\)}
             {
                 Transmit \(\phi_i^{(n)}(k)\) to nodes  \(j \in \Nset_i\)\;
                 \(\phi_i^{(n)}({k+1}) \gets \sum_{j \in \Nset_i} W_{ij} \phi_j^{(n)}({k})\)\;
             }
-            \(\hat{\phi}_i^{(n)} \gets \gamma_i \eta_i^{(n)} + (1-\gamma) \phi_i^{(n)}(K)\)\;
-            \(\hat{\h_i}^{(n)} \gets \frac{\bar{\h}_i^{(n)}}{\sqrt{\hat{\phi}_i^{(n)}M}}\)\;
+            \(\hat{\h_i}^{(n)} \gets \frac{\bar{\h}_i^{(n)}}{\sqrt{M \phi_i^{(n)}(K)}}\)\;
             \dotfill\\
             \emph{The steps after are as introduced in }\cite{blochbergerDBSI}\\
-            % \(\cdots\)\\
-            % \(\uu_i^{(n)} \gets \uu_i^{(n-1)} + \rho \left( \w_i^{(n)} - \tilde{\h}_i^{(n)} \right)\)\;
-            % \(\cdots\)\\
-            % % \,\\
         }
     }
 \end{algorithm}
@@ -365,24 +283,23 @@ We can observe that when fixing \(\gamma_i\), a tradeoff between convergence spe
 With \(K=10\), the performance comes close to the optimal case at the cost of additional communication between nodes.
 This in contrast to the case with adaptive \(\gamma_i\) where even at \(K=1\), i.e., no additional communication for the recursive estimation scheme, convergence speed and steady-state error are close to the optimal case.
 
-The second simulation setup is a \(3\)-node ring topology with a neighborhood size of \(|N_i|=2\).
+The second simulation setup is a \(3\)-node ring topology with a neighborhood size of \(N_i=2\) (including node \(i\)).
 The input signal, impulse responses, additive noise, and SNR have the same parameters as the first simulation.
-To test the algorithms response to time-variant scenarios, the 3 impulse responses are then scaled to norms of \([2.2, 0.5, 1.2],\, [2.2, 1.0, 1.2],\, [2.2, 0.5, 2.0]\) at frames \(0,\, 5000,\, 10000\) respectively.
+To test the algorithms response to time-varying scenarios, the 3 impulse responses are then scaled to norms of \([2.2, 0.5, 1.2],\, [2.2, 1.0, 1.2],\, [2.2, 0.5, 2.0]\) at frames \(0,\, 5000,\, 10000\) respectively.
 \autoref{fig:simulations:NPMtimedyn} (bottom) shows the median NPM of 30 Monte-Carlo runs, where we can observe very similar behavior of the optimal and distributed-averaging-based algorithms, where both algorithms reach a converged state after the rescaling events.
-It further shows the damped oscillations that appear in the estimates of \(\|\hat{\h}^{(n)}\|\) around the target value 1 \autoref{fig:simulations:NPMtimedyn} (top) and \(\|\hat{\h}_i^{(n)}\|\) around the rescaled true norms \autoref{fig:simulations:NPMtimedyn} (middle), respectively.
+It further shows the damped oscillations that appear in the estimates of \(\|\hat{\h}^{(n)}\|\) around the desired value 1 and \(\|\hat{\h}_i^{(n)}\|\) around the rescaled true norms in \autoref{fig:simulations:NPMtimedyn} (top), respectively.
 
-In summary, the simulations show that the right choice of fixed \(\gamma_i\) leads to results close to an optimal case with \(K=1\) distributed averaging iterations.
+In summary, the simulations show that the right choice of fixed \(\gamma_i\) leads to results close to an optimal case even with \(K=1\) distributed averaging iterations.
 Further, introducing an adaptive \(\gamma_i^{(n)}\) allows the algorithm to converge faster and deal with time-variant systems.
-This is an improvement over \cite{blochbergerDBSI} as communication is only required within neighborhoods and over \cite{liuDistributedBlindIdentification2016,liuDistributedRecursiveBlind2017} needing only \(K=1\) instead of \(K=50\) iterations per frame.
-\looseness=-1
+This is an improvement over \cite{blochbergerDBSI} as communication is only required within neighborhoods and over \cite{yuDistributedBlindSystem2014, liuDistributedBlindIdentification2016} needing only \(K=1\) instead of \(K=50\) iterations per frame.
 
 \begin{figure}[t]
     \centering
-    \input{simulations/plots/icassp2023-dynamic-norm/icassp2023-dynamic-norm.pgf}\\\vspace*{-1.0cm}
-    \input{simulations/plots/icassp2023-dynamic-norms/icassp2023-dynamic-norms.pgf}\\\vspace*{-1.0cm}
+    % \input{simulations/plots/icassp2023-dynamic-norm/icassp2023-dynamic-norm.pgf}\\\vspace*{-1.0cm}
+    \input{simulations/plots/icassp2023-dynamic-norms/icassp2023-dynamic-norms.pgf}\\\vspace*{-1.2cm}
     \input{simulations/plots/icassp2023-dynamic-time/icassp2023-dynamic-time.pgf}
     \vspace*{-0.6cm}
-    \caption[]{Results of 30 Monte-Carlo runs: Top: Estimated \(\|\h^{(n)}\|\) over time, shown is the mean. Middle: Estimated \(\|\hat{\h}_i^{(n)}\|\) over time, shown is the mean. Dot-dashed lines are true values. Bottom: Median NPM, comparing optimal algorithm and proposed extended algorithm. Dashed vertical lines indicate rescaling events.}
+    \caption[]{Results of 30 Monte-Carlo runs: Top: Estimated \(\|\h^{(n)}\|\), \(\|\hat{\h}_i^{(n)}\|\) over time, shown is the mean. Dot-dashed lines are true values. Bottom: Median NPM, comparing optimal algorithm and proposed extended algorithm. Dashed vertical lines indicate rescaling events.}
     \label{fig:simulations:NPMtimedyn}
 \end{figure}
 \section[]{Conclusions}
@@ -393,14 +310,12 @@ By balancing the averaging with introducing new data into the recursion, we allo
 The mixing factor, which balances new data with recursion data, is set adaptively dependent on instantaneous channel estimate norms.
 These introductions reduce inter-node transmissions for each time frame while still delivering steady-state estimation performance close to the optimal case where network-wide information is available at all nodes.
 The reduction that can be achieved goes as far as only needing a single iteration and, therefore, one additional inter-neighborhood information exchange per time frame.
-We show this in simulations with a white Gaussian input signal and random impulse responses drawn from the normal distribution.
-\begin{todo}
-    \begin{itemize}
-        \item Scale up simulation (for first setup) to \(M >> N_i\), like M = 50 and neighborhoods like in Toon's paper.
-        \item minor changes to plot labels, legend layouts
-        \item cite Bilgesu's paper somewhere :)
-    \end{itemize}
-\end{todo}
+We illustrate the performance in simulations with a white Gaussian input signal and random impulse responses drawn from the normal distribution.
+% \begin{todo}
+%     \begin{itemize}
+%         \item Scale up simulation (for first setup) to \(M >> N_i\), like M = 50 and neighborhoods like in Toon's paper.
+%     \end{itemize}
+% \end{todo}
 
 \vfill\pagebreak
 
@@ -409,6 +324,6 @@ We show this in simulations with a white Gaussian input signal and random impuls
 % style file from IEEE produces unsorted bibliography list.
 % -------------------------------------------------------------------------
 \bibliographystyle{IEEEbib}
-\bibliography{refs}
+\bibliography{bib_abbrev,refs}
 
 \end{document}

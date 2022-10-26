@@ -144,17 +144,17 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
 
 # %%
 if __name__ == "__main__":  # Necessary for module loading in condor processes :(
-    cfg = simulation.SimConfig(
-        id="icassp2023-dynamic",
-        runs=30,
-        seed=573438,
-        variables=[
-            {"alg": ["davgad", "opt"], "SNR": [10], "gamma": [0.0], "iters": [1]},
-        ],
-    )
+    # cfg = simulation.SimConfig(
+    #     id="icassp2023-dynamic",
+    #     runs=30,
+    #     seed=573438,
+    #     variables=[
+    #         {"alg": ["davgad", "opt"], "SNR": [10], "gamma": [0.0], "iters": [1]},
+    #     ],
+    # )
     # %%
     # You can save the simulation configuration to a json file
-    cfg.save("icassp2023-dynamic")
+    # cfg.save("icassp2023-dynamic")
     # %%
     # Load a saved configuration
     cfg = simulation.SimConfig.load("icassp2023-dynamic")
@@ -166,33 +166,34 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # sim.clearTmpData()
     # %%
     # Run the simulation locally with n processes
-    sim.runLocal(nprocesses=8, showprogress=True)
+    sim.runLocal(nprocesses=8, showprogress=False)
     # %%
     # Get the result after completion
     result = sim.getResult()
     # %%
+    # THIS IS FOR RUNING THE SIMULTION ON A THCONDOR CLUSTER
     # Define condor job parameters
-    user_submit = {
-        "request_walltime": "3600",  # Time in seconds
-        "initialdir": ".",
-        "notification": "Error",
-        "executable": "/users/sista/mblochbe/python_venvs/admmstuff/bin/python",
-        "request_cpus": "1",
-        "request_memory": "1GB",
-    }
+    # user_submit = {
+    #     "request_walltime": "3600",  # Time in seconds
+    #     "initialdir": ".",
+    #     "notification": "Error",
+    #     "executable": "/path/to/python",
+    #     "request_cpus": "1",
+    #     "request_memory": "1GB",
+    # }
     # %%
     # Submit the condor jobs
-    sim.runCondor(user_submit)
+    # sim.runCondor(user_submit)
     # %%
     # Show status of condor jobs
-    sim.getJobStatus()
+    # sim.getJobStatus()
     # %%
     # Check if all are done
-    print(sim.isDone())
+    # print(sim.isDone())
     # %%
     # Get result if done
-    if sim.isDone():
-        result = sim.getResult()
+    # if sim.isDone():
+    #     result = sim.getResult()
     # %%
     frames = int(result.df.shape[1] / 5)
     data = result.df.groupby(["alg", "gamma", "iters"])

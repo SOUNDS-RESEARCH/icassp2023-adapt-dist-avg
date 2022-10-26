@@ -127,46 +127,46 @@ def simulate(alg, SNR, gamma, iters, run: int, seed: int):
 
 # %%
 if __name__ == "__main__":  # Necessary for module loading in condor processes :(
-    cfg = simulation.SimConfig(
-        id="icassp2023-static",
-        runs=30,
-        seed=573438,
-        variables=[
-            {"alg": ["opt"], "SNR": [10], "gamma": [1.0], "iters": [1]},
-            {"alg": ["davgad"], "SNR": [10], "gamma": [1.0], "iters": [1]},
-            {
-                "alg": ["davg"],
-                "SNR": [10],
-                "gamma": [
-                    0.0,
-                    0.002,
-                    0.004,
-                    0.006,
-                    0.008,
-                    0.01,
-                    0.012,
-                    0.014,
-                    0.016,
-                    0.018,
-                    0.02,
-                    0.022,
-                    0.024,
-                    0.026,
-                    0.028,
-                    0.03,
-                    0.032,
-                    0.034,
-                    0.036,
-                    0.038,
-                    0.04,
-                ],
-                "iters": [1, 2, 10],
-            },
-        ],
-    )
+    # cfg = simulation.SimConfig(
+    #     id="icassp2023-static",
+    #     runs=30,
+    #     seed=573438,
+    #     variables=[
+    #         {"alg": ["opt"], "SNR": [10], "gamma": [1.0], "iters": [1]},
+    #         {"alg": ["davgad"], "SNR": [10], "gamma": [1.0], "iters": [1]},
+    #         {
+    #             "alg": ["davg"],
+    #             "SNR": [10],
+    #             "gamma": [
+    #                 0.0,
+    #                 0.002,
+    #                 0.004,
+    #                 0.006,
+    #                 0.008,
+    #                 0.01,
+    #                 0.012,
+    #                 0.014,
+    #                 0.016,
+    #                 0.018,
+    #                 0.02,
+    #                 0.022,
+    #                 0.024,
+    #                 0.026,
+    #                 0.028,
+    #                 0.03,
+    #                 0.032,
+    #                 0.034,
+    #                 0.036,
+    #                 0.038,
+    #                 0.04,
+    #             ],
+    #             "iters": [1, 2, 10],
+    #         },
+    #     ],
+    # )
     # %%
     # You can save the simulation configuration to a json file
-    cfg.save("icassp2023-static")
+    # cfg.save("icassp2023-static")
     # %%
     # Load a saved configuration
     cfg = simulation.SimConfig.load("icassp2023-static")
@@ -178,33 +178,33 @@ if __name__ == "__main__":  # Necessary for module loading in condor processes :
     # sim.clearTmpData()
     # %%
     # Run the simulation locally with n processes
-    sim.runLocal(nprocesses=8, showprogress=True)
+    sim.runLocal(nprocesses=8, showprogress=False)
     # %%
     # Get the result after completion
     result = sim.getResult()
     # %%
     # Define condor job parameters
-    user_submit = {
-        "request_walltime": "3600",  # Time in seconds
-        "initialdir": ".",
-        "notification": "Error",
-        "executable": "/users/sista/mblochbe/python_venvs/admmstuff/bin/python",
-        "request_cpus": "1",
-        "request_memory": "1GB",
-    }
+    # user_submit = {
+    #     "request_walltime": "3600",  # Time in seconds
+    #     "initialdir": ".",
+    #     "notification": "Error",
+    #     "executable": "/users/sista/mblochbe/python_venvs/admmstuff/bin/python",
+    #     "request_cpus": "1",
+    #     "request_memory": "1GB",
+    # }
     # %%
     # Submit the condor jobs
-    sim.runCondor(user_submit)
+    # sim.runCondor(user_submit)
     # %%
     # Show status of condor jobs
-    sim.getJobStatus()
+    # sim.getJobStatus()
     # %%
     # Check if all are done
-    print(sim.isDone())
+    # print(sim.isDone())
     # %%
     # Get result if done
-    if sim.isDone():
-        result = sim.getResult()
+    # if sim.isDone():
+    # result = sim.getResult()
     # %%
     data = result.df.groupby(["alg", "gamma", "iters"])
 

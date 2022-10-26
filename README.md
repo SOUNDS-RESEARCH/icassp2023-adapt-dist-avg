@@ -8,7 +8,7 @@ Simulation results show that the extension provides estimation results close to 
 
 
 ## Repository content
-This repository contains all code used to generate the paper submission.
+This repository contains all code used to generate the plots for the paper submission.
 - Python simulation code
 ## Instructions
 In order to run the simulation, do the following:
